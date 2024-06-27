@@ -1,6 +1,19 @@
 [
   {
     "Stable": true,
+    "Version": "1.0.1.1",
+    "Date": "2024-05-19",
+    "ChangeGroups": [
+      {
+        "Name": "Changes",
+        "Changes": [
+          "Compatibility with EDT and the 'Overwrite Existing Icons' option in AIL."
+        ]
+      }
+    ]
+  },
+  {
+    "Stable": true,
     "Version": "1.0.1",
     "Date": "2024-04-30",
     "ChangeGroups": [

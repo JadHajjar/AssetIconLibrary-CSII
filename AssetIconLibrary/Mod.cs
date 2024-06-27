@@ -49,7 +49,11 @@ namespace AssetIconLibrary
 		{
 			Log.Info(nameof(OnDispose));
 
-			UIManager.defaultUISystem.RemoveHostLocation($"ail");
+			if (Settings != null)
+			{
+				Settings.UnregisterInOptionsUI();
+				Settings = null;
+			}
 		}
 	}
 }

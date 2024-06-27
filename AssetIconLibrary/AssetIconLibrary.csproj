@@ -5,15 +5,12 @@
 		<LangVersion>9</LangVersion>
 		<TargetFramework>net472</TargetFramework>
 		<Configurations>Debug;Release</Configurations>
-		<Version>1.0.1</Version>
+		<Version>1.0.1.1</Version>
 		<FileVersion>$(Version)</FileVersion>
 		<AssemblyVersion>$(Version)</AssemblyVersion>
 		<Company>T. D. W.</Company>
 		<Copyright>@2024 MIT license</Copyright>
 		<Product>Asset Icon Library</Product>
-
-		<!--The folder where Game.dll is located. Set it only if the game is not installed in the default location, otherwise keep it empty-->
-		<CustomManagedPath>C:\Program Files (x86)\Steam\steamapps\common\Cities Skylines II\Cities2_Data\Managed</CustomManagedPath>
 
 		<!--The file where mod information which is required for publishing mod on PDX mods are stored-->
 		<PublishConfigurationPath>Properties\PublishConfiguration.xml</PublishConfigurationPath>
@@ -31,14 +28,13 @@
 		<Copy SourceFiles="@(IconFiles)" DestinationFiles="@(IconFiles->'$(DeployDir)\Thumbnails\%(RecursiveDir)%(Filename)%(Extension)')" />
 	</Target>
 
-	<Target Name="UpdatePublishConfiguration" BeforeTargets="Publish">
+	<Target Name="UpdatePublishConfiguration" BeforeTargets="Publish" Condition="'$(ModPublisherCommand)'=='NewVersion'">
 		<PropertyGroup>
-			<PdxPublishConfiguration>$([System.IO.Path]::GetFullPath('..\PdxPublishConfiguration\PdxPublishConfiguration.exe'))</PdxPublishConfiguration>
-			<ChangelogJsonFile>"$([System.IO.Path]::GetFullPath('..\AssetIconLibrary\Changelog.json'))"</ChangelogJsonFile>
-			<PublishConfigurationFile>"$([System.IO.Path]::GetFullPath('..\AssetIconLibrary\$(PublishConfigurationPath)'))"</PublishConfigurationFile>
+			<PdxPublishConfiguration>"$(SolutionDir)..\PdxPublishConfiguration\PdxPublishConfiguration.exe"</PdxPublishConfiguration>
+			<PublishConfigurationFile>"$(ProjectDir)AutoPublishConfiguration.json"</PublishConfigurationFile>
 		</PropertyGroup>
 
-		<Exec Command="$(PdxPublishConfiguration) $(PublishConfigurationFile) $(Version) Stable $(ChangelogJsonFile) $(ModPublisherCommand)" />
+		<Exec Command="$(PdxPublishConfiguration) $(Version) $(PublishConfigurationFile)" />
 	</Target>
 
 	<ItemGroup>

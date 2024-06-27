@@ -44,14 +44,14 @@ This allows you to add your own thumbnails without needing to overwrite any file
   <Screenshot Value="Properties/Screenshot10.png" />
   <Tag Value="Code Mod" />
   <ForumLink Value="https://forum.paradoxplaza.com/forum/threads/asset-icon-library.1672325/" />
-  <ModVersion Value="1.0.1" />
+  <ModVersion Value="1.0.1.1" />
   <GameVersion Value="1.*" />
   <ChangeLog>
-# v1.0.1
+# v1.0.1.1
 ## Changes
-* Added 578 branding thumbnails.
-* Updated 703 prop thumbnails.
+* Compatibility with EDT and the 'Overwrite Existing Icons' option in AIL.
 </ChangeLog>
   <ExternalLink Type="discord" Url="https://discord.gg/E4k8ZEtRxd" />
   <ExternalLink Type="github" Url="https://github.com/JadHajjar/AssetIconLibrary-CSII" />
+	<ExternalLink Type="buymeacoffee" Url="https://www.buymeacoffee.com/tdwsvillage" />
 </Publish>

@@ -1,11 +1,13 @@
 ﻿using Game;
 using Game.Prefabs;
+using Game.SceneFlow;
 using Game.UI;
 
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 
 using Unity.Entities;
@@ -15,11 +17,6 @@ namespace AssetIconLibrary
 	internal partial class ThumbnailReplacerSystem : GameSystemBase
 	{
 		internal static string ThumbnailPath { get; set; }
-
-		public ThumbnailReplacerSystem()
-		{
-
-		}
 
 		protected override void OnUpdate()
 		{
@@ -41,7 +38,7 @@ namespace AssetIconLibrary
 
 				if (prefabs[i].TryGet<UIObject>(out var uIObject))
 				{
-					if (Mod.Settings.OverwriteIcons)
+					if (Mod.Settings.OverwriteIcons || string.IsNullOrWhiteSpace(uIObject.m_Icon))
 					{
 						uIObject.m_Icon = thumbnail;
 					}
