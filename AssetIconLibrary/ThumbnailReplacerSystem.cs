@@ -45,6 +45,7 @@ namespace AssetIconLibrary {
                     if (Mod.Settings.OverwriteIcons
                         // almost none of the uiObjects have an icon
                         // imageSystem does the trick
+                        // this causes ExtraAssets to not show some icons
                         // || String.IsNullOrWhiteSpace(uIObject.m_Icon)
                         ) {
                         uIObject.m_Icon = newIcon;
