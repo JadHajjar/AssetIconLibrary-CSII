@@ -21,7 +21,7 @@ namespace AssetIconLibrary {
             Stopwatch stopWatch = Stopwatch.StartNew();
             Dictionary<string, string> loadedIcons = GetAvailableIcons();
             PrefabSystem prefabSystem = this.World.GetExistingSystemManaged<PrefabSystem>();
-            Dictionary<PrefabBase, Entity> prefabEntityMapping = typeof(PrefabSystem)
+            IReadOnlyDictionary<PrefabBase, Entity> prefabEntityMapping = typeof(PrefabSystem)
                 .GetField("m_Entities", BindingFlags.NonPublic | BindingFlags.Instance)
                 .GetValue(prefabSystem) as Dictionary<PrefabBase, Entity>;
 
