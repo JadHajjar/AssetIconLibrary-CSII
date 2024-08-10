@@ -7,6 +7,7 @@ using System.Reflection;
 
 using Game;
 using Game.Prefabs;
+using Game.UI;
 
 using Unity.Entities;
 
@@ -23,6 +24,10 @@ namespace AssetIconLibrary {
             Dictionary<PrefabBase, Entity> prefabEntityMapping = typeof(PrefabSystem)
                 .GetField("m_Entities", BindingFlags.NonPublic | BindingFlags.Instance)
                 .GetValue(prefabSystem) as Dictionary<PrefabBase, Entity>;
+
+
+            // the whole image-magic
+            ImageSystem imageSystem = this.World.GetExistingSystemManaged<ImageSystem>();
 
 
             List<PrefabBase> prefabs = prefabEntityMapping.Keys.ToList();
