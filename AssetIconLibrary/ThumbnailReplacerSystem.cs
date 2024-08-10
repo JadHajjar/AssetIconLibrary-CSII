@@ -34,6 +34,7 @@ namespace AssetIconLibrary {
 
             List<PrefabBase> prefabs = prefabEntityMapping.Keys.ToList();
 
+            ExtraHelperHelper extraHelper = new ExtraHelperHelper(imageSystem, prefabEntityMapping);
             PrefabCsvLogger csvLogger = new PrefabCsvLogger(Mod.Log, imageSystem, prefabEntityMapping);
             if (this.logCSV) {
                 csvLogger.Start();
@@ -48,9 +49,7 @@ namespace AssetIconLibrary {
                     continue;
                 }
 
-                if (this.logCSV) {
-                    csvLogger.Log(prefab);
-                }
+                csvLogger.Log(prefab);
 
                 if (prefab.TryGet<UIObject>(out UIObject uIObject)) {
                     if (Mod.Settings.OverwriteIcons
@@ -60,6 +59,14 @@ namespace AssetIconLibrary {
                         // || String.IsNullOrWhiteSpace(uIObject.m_Icon)
                         ) {
                         uIObject.m_Icon = newIcon;
+                    } else if (extraHelper.IsExtra(prefab)
+                               && String.IsNullOrEmpty(uIObject.m_Icon)) {
+                        uIObject.m_Icon = newIcon;
+
+                        // the following does not work :(
+                        // uIObject.m_Icon = prefab.thumbnailUrl;
+                        // uIObject.m_Icon = prefab.thumbnailUrl + ".svg";
+                        // uIObject.m_Icon = prefab.thumbnailUrl + ".png";
                     }
                 } else {
                     // those without an icon?
@@ -100,65 +107,65 @@ namespace AssetIconLibrary {
 
         private static readonly string[] _brandGroups = new[]
         {
-            "SignFrontwayLarge02 - ",
-            "SignFrontwayMedium01 - ",
-            "SignFrontwayMedium02 - ",
-            "SignFrontwaySmall01 - ",
-            "SignFrontwaySmall02 - ",
-            "SignNeonLarge01 - ",
-            "SignNeonLarge02 - ",
-            "SignNeonMedium01 - ",
-            "SignNeonMedium02 - ",
-            "SignNeonSmall01 - ",
-            "SignNeonSmall02 - ",
-            "SignRoundLarge01 - ",
-            "SignSidewayLarge01 - ",
-            "SignSidewayLarge02 - ",
-            "SignSidewayMedium01 - ",
-            "SignSidewayMedium02 - ",
-            "SignSidewaySmall01 - ",
-            "SignSidewaySmall02 - ",
-            "AStand01 - ",
-            "AStand02 - ",
-            "Stand01 - ",
-            "Stand02 - ",
-            "Screen02 - ",
-            "SignFrontwayLarge01 - ",
-            "BillboardHuge02 - ",
-            "BillboardLarge02 - ",
-            "BillboardMedium02 - ",
-            "BillboardSmall01 - ",
-            "BillboardSmall02 - ",
-            "BillboardRoundLarge01 - ",
-            "BillboardRoundMedium01 - ",
-            "BillboardRoundSmall01 - ",
-            "BillboardWallHuge02 - ",
-            "BillboardWallLarge01 - ",
-            "BillboardWallLarge03 - ",
-            "BillboardWallMedium01 - ",
-            "BillboardWallMedium02 - ",
-            "BillboardWallSmall01 - ",
-            "BillboardWallSmall02 - ",
-            "BillboardWallSmall03 - ",
-            "BillboardWallSmall04 - ",
-            "GasStationPylon01 - ",
-            "GasStationPylon02 - ",
-            "GasStationPylon03 - ",
-            "PosterHuge01 - ",
-            "PosterHuge02 - ",
-            "PosterLarge01 - ",
-            "PosterLarge02 - ",
-            "PosterMedium01 - ",
-            "PosterMedium02 - ",
-            "PosterSmall01 - ",
-            "PosterSmall02 - ",
-            "Screen01 - ",
-            "BillboardLarge01 - ",
-            "BillboardMedium01 - ",
-            "BillboardWallHuge01 - ",
-            "BillboardWallLarge02 - ",
-            "BillboardWallLarge04 - ",
-            "BillboardHuge01 - ",
-        };
+        "SignFrontwayLarge02 - ",
+        "SignFrontwayMedium01 - ",
+        "SignFrontwayMedium02 - ",
+        "SignFrontwaySmall01 - ",
+        "SignFrontwaySmall02 - ",
+        "SignNeonLarge01 - ",
+        "SignNeonLarge02 - ",
+        "SignNeonMedium01 - ",
+        "SignNeonMedium02 - ",
+        "SignNeonSmall01 - ",
+        "SignNeonSmall02 - ",
+        "SignRoundLarge01 - ",
+        "SignSidewayLarge01 - ",
+        "SignSidewayLarge02 - ",
+        "SignSidewayMedium01 - ",
+        "SignSidewayMedium02 - ",
+        "SignSidewaySmall01 - ",
+        "SignSidewaySmall02 - ",
+        "AStand01 - ",
+        "AStand02 - ",
+        "Stand01 - ",
+        "Stand02 - ",
+        "Screen02 - ",
+        "SignFrontwayLarge01 - ",
+        "BillboardHuge02 - ",
+        "BillboardLarge02 - ",
+        "BillboardMedium02 - ",
+        "BillboardSmall01 - ",
+        "BillboardSmall02 - ",
+        "BillboardRoundLarge01 - ",
+        "BillboardRoundMedium01 - ",
+        "BillboardRoundSmall01 - ",
+        "BillboardWallHuge02 - ",
+        "BillboardWallLarge01 - ",
+        "BillboardWallLarge03 - ",
+        "BillboardWallMedium01 - ",
+        "BillboardWallMedium02 - ",
+        "BillboardWallSmall01 - ",
+        "BillboardWallSmall02 - ",
+        "BillboardWallSmall03 - ",
+        "BillboardWallSmall04 - ",
+        "GasStationPylon01 - ",
+        "GasStationPylon02 - ",
+        "GasStationPylon03 - ",
+        "PosterHuge01 - ",
+        "PosterHuge02 - ",
+        "PosterLarge01 - ",
+        "PosterLarge02 - ",
+        "PosterMedium01 - ",
+        "PosterMedium02 - ",
+        "PosterSmall01 - ",
+        "PosterSmall02 - ",
+        "Screen01 - ",
+        "BillboardLarge01 - ",
+        "BillboardMedium01 - ",
+        "BillboardWallHuge01 - ",
+        "BillboardWallLarge02 - ",
+        "BillboardWallLarge04 - ",
+        "BillboardHuge01 - ",
+    };
     }
 }
