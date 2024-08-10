@@ -33,18 +33,27 @@ namespace AssetIconLibrary {
             List<PrefabBase> prefabs = prefabEntityMapping.Keys.ToList();
 
             for (int i = 0; i < prefabs.Count; i++) {
-                if (!loadedIcons.TryGetValue(prefabs[i].name, out string thumbnail)) {
+                PrefabBase prefab = prefabs[i];
+
+
+                if (!loadedIcons.TryGetValue(prefab.name, out string newIcon)) {
                     continue;
                 }
 
-                if (prefabs[i].TryGet<UIObject>(out UIObject uIObject)) {
-                    if (Mod.Settings.OverwriteIcons || String.IsNullOrWhiteSpace(uIObject.m_Icon)) {
-                        uIObject.m_Icon = thumbnail;
+
+                if (prefab.TryGet<UIObject>(out UIObject uIObject)) {
+                    if (Mod.Settings.OverwriteIcons
+                        // almost none of the uiObjects have an icon
+                        // imageSystem does the trick
+                        // || String.IsNullOrWhiteSpace(uIObject.m_Icon)
+                        ) {
+                        uIObject.m_Icon = newIcon;
                     }
                 } else {
-                    uIObject = prefabs[i].AddComponent<UIObject>();
+                    // those without an icon?
+                    uIObject = prefab.AddComponent<UIObject>();
                     uIObject.m_Priority = 1;
-                    uIObject.m_Icon = thumbnail;
+                    uIObject.m_Icon = newIcon;
                 }
             }
 
