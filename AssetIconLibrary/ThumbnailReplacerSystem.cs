@@ -34,7 +34,7 @@ namespace AssetIconLibrary {
 
             List<PrefabBase> prefabs = prefabEntityMapping.Keys.ToList();
 
-            ExtraHelperHelper extraHelper = new ExtraHelperHelper(imageSystem, prefabEntityMapping);
+            ExtraHelper extraHelper = new ExtraHelper(imageSystem, prefabEntityMapping);
             PrefabCsvLogger csvLogger = new PrefabCsvLogger(Mod.Log, imageSystem, prefabEntityMapping);
             if (this.logCSV) {
                 csvLogger.Start();
