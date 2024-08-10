@@ -2,10 +2,13 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 
 using Game;
 using Game.Prefabs;
+
+using Unity.Entities;
 
 namespace AssetIconLibrary {
     internal partial class ThumbnailReplacerSystem : GameSystemBase {
@@ -17,9 +20,12 @@ namespace AssetIconLibrary {
             Stopwatch stopWatch = Stopwatch.StartNew();
             Dictionary<string, string> loadedIcons = GetAvailableIcons();
             PrefabSystem prefabSystem = this.World.GetExistingSystemManaged<PrefabSystem>();
-            List<PrefabBase> prefabs = typeof(PrefabSystem)
-                .GetField("m_Prefabs", BindingFlags.NonPublic | BindingFlags.Instance)
-                .GetValue(prefabSystem) as List<PrefabBase>;
+            Dictionary<PrefabBase, Entity> prefabEntityMapping = typeof(PrefabSystem)
+                .GetField("m_Entities", BindingFlags.NonPublic | BindingFlags.Instance)
+                .GetValue(prefabSystem) as Dictionary<PrefabBase, Entity>;
+
+
+            List<PrefabBase> prefabs = prefabEntityMapping.Keys.ToList();
 
             for (int i = 0; i < prefabs.Count; i++) {
                 if (!loadedIcons.TryGetValue(prefabs[i].name, out string thumbnail)) {
