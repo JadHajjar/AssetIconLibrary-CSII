@@ -13,6 +13,7 @@ using Unity.Entities;
 
 namespace AssetIconLibrary {
     internal partial class ThumbnailReplacerSystem : GameSystemBase {
+        private readonly bool logCSV = false;
         internal static string ThumbnailPath { get; set; }
 
         protected override void OnUpdate() {
@@ -27,10 +28,17 @@ namespace AssetIconLibrary {
 
 
             // the whole image-magic
+            /// <seealso cref="PrefabCsvLogger.Log(PrefabBase)"/>
             ImageSystem imageSystem = this.World.GetExistingSystemManaged<ImageSystem>();
 
 
             List<PrefabBase> prefabs = prefabEntityMapping.Keys.ToList();
+
+            PrefabCsvLogger csvLogger = new PrefabCsvLogger(Mod.Log, imageSystem, prefabEntityMapping);
+            if (this.logCSV) {
+                csvLogger.Start();
+            }
+
 
             for (int i = 0; i < prefabs.Count; i++) {
                 PrefabBase prefab = prefabs[i];
@@ -40,6 +48,9 @@ namespace AssetIconLibrary {
                     continue;
                 }
 
+                if (this.logCSV) {
+                    csvLogger.Log(prefab);
+                }
 
                 if (prefab.TryGet<UIObject>(out UIObject uIObject)) {
                     if (Mod.Settings.OverwriteIcons
@@ -57,6 +68,8 @@ namespace AssetIconLibrary {
                     uIObject.m_Icon = newIcon;
                 }
             }
+
+            csvLogger.Stop();
 
             stopWatch.Stop();
 
