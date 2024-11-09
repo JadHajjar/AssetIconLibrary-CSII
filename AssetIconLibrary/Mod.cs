@@ -5,11 +5,12 @@ using Colossal.UI;
 using Game;
 using Game.Modding;
 using Game.SceneFlow;
-using Game.Settings;
 
+using System.Diagnostics;
 using System.IO;
-
-using UnityEngine;
+using System.IO.Compression;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace AssetIconLibrary
 {
@@ -30,7 +31,9 @@ namespace AssetIconLibrary
 
 			if (GameManager.instance.modManager.TryGetExecutableAsset(this, out var asset))
 			{
-				UIManager.defaultUISystem.AddHostLocation($"ail", ThumbnailReplacerSystem.ThumbnailPath = Path.Combine(Path.GetDirectoryName(asset.path), "Thumbnails"), false);
+				FolderUtil.ModPath = asset.path;
+
+				Task.Run(UnpackIcons);
 
 				if (Directory.Exists(FolderUtil.CustomContentFolder))
 				{
@@ -43,6 +46,56 @@ namespace AssetIconLibrary
 			{
 				Log.Error("Load Failed, could not get executable path");
 			}
+		}
+
+		private async void UnpackIcons()
+		{
+			var targetFoler = Path.Combine(FolderUtil.ContentFolder, "Thumbnails");
+			var directoryInfo = new DirectoryInfo(targetFoler);
+
+			if (directoryInfo.Exists && directoryInfo.LastWriteTime > File.GetLastWriteTime(FolderUtil.ModPath))
+			{
+				SetThumbnailFolder(targetFoler);
+
+				Log.Info("Thumbnails up to date");
+
+				return;
+			}
+
+			var stopwatch = Stopwatch.StartNew();
+			var thumbnailFolder = Path.Combine(Path.GetDirectoryName(FolderUtil.ModPath), ".Thumbnails");
+
+			if (directoryInfo.Exists)
+			{
+				directoryInfo.Delete(true);
+			}
+
+			directoryInfo.Create();
+
+			var tasks = Directory.GetFiles(thumbnailFolder, "*.zip").Select(zip => Task.Run(() => UnpackZip(zip, targetFoler)));
+
+			await Task.WhenAll(tasks);
+
+			stopwatch.Stop();
+
+			Log.Info($"{directoryInfo.GetFiles().Length} icons finished unpacking in {stopwatch.Elapsed.TotalSeconds}s");
+
+			SetThumbnailFolder(targetFoler);
+		}
+
+		private static void SetThumbnailFolder(string targetFoler)
+		{
+			UIManager.defaultUISystem.AddHostLocation($"ail", targetFoler, false);
+
+			ThumbnailReplacerSystem.ThumbnailPath = targetFoler;
+		}
+
+		private void UnpackZip(string item, string targetFoler)
+		{
+			using var stream = File.OpenRead(item);
+			using var zipArchive = new ZipArchive(stream, ZipArchiveMode.Read, false);
+
+			zipArchive.ExtractToDirectory(targetFoler);
 		}
 
 		public void OnDispose()

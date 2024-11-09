@@ -20,6 +20,9 @@ namespace AssetIconLibrary
 
 		protected override void OnUpdate()
 		{
+			if (ThumbnailPath is null or "")
+				return;
+
 			Enabled = false;
 
 			var stopWatch = Stopwatch.StartNew();

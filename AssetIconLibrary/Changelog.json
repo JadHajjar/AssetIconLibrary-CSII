@@ -1,6 +1,19 @@
 [
   {
     "Stable": true,
+    "Version": "1.1.1",
+    "Date": "2024-11-09",
+    "ChangeGroups": [
+      {
+        "Name": "Changes",
+        "Changes": [
+          "Reworked the packaging method to improve the installation process of the mod."
+        ]
+      }
+    ]
+  },
+  {
+    "Stable": true,
     "Version": "1.1.0",
     "Date": "2024-05-19",
     "ChangeGroups": [

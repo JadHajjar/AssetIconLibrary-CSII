@@ -5,7 +5,7 @@
 		<LangVersion>9</LangVersion>
 		<TargetFramework>net472</TargetFramework>
 		<Configurations>Debug;Release</Configurations>
-		<Version>1.1.0</Version>
+		<Version>1.1.1</Version>
 		<FileVersion>$(Version)</FileVersion>
 		<AssemblyVersion>$(Version)</AssemblyVersion>
 		<Company>T. D. W.</Company>
@@ -21,11 +21,13 @@
 	<Import Project="$([System.Environment]::GetEnvironmentVariable('CSII_TOOLPATH', 'EnvironmentVariableTarget.User'))\Mod.targets" />
 
 	<Target Name="CopyFiles" AfterTargets="DeployWIP">
-		<ItemGroup>
-			<IconFiles Include=".\Thumbnails\*.*" />
-		</ItemGroup>
+		<PropertyGroup>
+			<AutoZipFolder>"$(SolutionDir)\AutoZipFolder\AutoZipFolder.exe"</AutoZipFolder>
+			<AutoZipSource>"$(ProjectDir)\Thumbnails"</AutoZipSource>
+			<AutoZipTarget>"$(DeployDir)\.Thumbnails\Pack"</AutoZipTarget>
+		</PropertyGroup>
 
-		<Copy SourceFiles="@(IconFiles)" DestinationFiles="@(IconFiles->'$(DeployDir)\Thumbnails\%(RecursiveDir)%(Filename)%(Extension)')" />
+		<Exec Command="$(AutoZipFolder) $(AutoZipSource) $(AutoZipTarget) 15728640" />
 	</Target>
 
 	<Target Name="UpdatePublishConfiguration" BeforeTargets="Publish" Condition="'$(ModPublisherCommand)'=='NewVersion'">
@@ -59,6 +61,7 @@
 		<Reference Include="Colossal.Localization">
 			<Private>false</Private>
 		</Reference>
+		<Reference Include="System.IO.Compression" />
 		<Reference Include="Unity.InputSystem">
 			<Private>false</Private>
 		</Reference>

@@ -14,6 +14,7 @@ namespace AssetIconLibrary
 		public static string ContentFolder { get; }
 		public static string CustomContentFolder { get; }
 		public static string SettingsFolder { get; }
+		public static string ModPath { get; set; }
 
 		static FolderUtil()
 		{
