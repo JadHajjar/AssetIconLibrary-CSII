@@ -44,12 +44,13 @@ This allows you to add your own thumbnails without needing to overwrite any file
   <Screenshot Value="Properties/Screenshot10.png" />
   <Tag Value="Code Mod" />
   <ForumLink Value="https://forum.paradoxplaza.com/forum/threads/asset-icon-library.1672325/" />
-  <ModVersion Value="1.1.1" />
+  <ModVersion Value="1.2" />
   <GameVersion Value="1.*" />
   <ChangeLog>
-# v1.1.1
+# v1.2
 ## Changes
-* Reworked the packaging method to improve the installation process of the mod.
+* Added icons for the German Region Pack.
+* Updated left-corner buildings' icons for the French Region Pack to face the correct direction.
 </ChangeLog>
   <ExternalLink Type="discord" Url="https://discord.gg/E4k8ZEtRxd" />
   <ExternalLink Type="github" Url="https://github.com/JadHajjar/AssetIconLibrary-CSII" />

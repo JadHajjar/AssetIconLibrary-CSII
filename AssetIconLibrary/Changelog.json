@@ -1,6 +1,20 @@
 [
   {
     "Stable": true,
+    "Version": "1.2",
+    "Date": "2024-11-11",
+    "ChangeGroups": [
+      {
+        "Name": "Changes",
+        "Changes": [
+          "Added icons for the German Region Pack.",
+          "Updated left-corner buildings' icons for the French Region Pack to face the correct direction."
+        ]
+      }
+    ]
+  },
+  {
+    "Stable": true,
     "Version": "1.1.1",
     "Date": "2024-11-09",
     "ChangeGroups": [
