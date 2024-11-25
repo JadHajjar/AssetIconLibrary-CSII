@@ -1,6 +1,22 @@
 [
   {
     "Stable": true,
+    "Version": "1.3",
+    "Date": "2024-11-11",
+    "ChangeGroups": [
+      {
+        "Name": "Changes",
+        "Changes": [
+          "Added icons for the UK Region Pack.",
+          "Updated some icons for the French Region Pack that were not up to AIL standards.",
+          "Fixed the 'Overwrite Existing Icons' option not working properly.",
+          "Custom Thumbnails are now loaded from sub-folders too."
+        ]
+      }
+    ]
+  },
+  {
+    "Stable": true,
     "Version": "1.2",
     "Date": "2024-11-11",
     "ChangeGroups": [

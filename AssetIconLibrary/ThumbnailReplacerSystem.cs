@@ -1,13 +1,10 @@
 ﻿using Game;
 using Game.Prefabs;
-using Game.SceneFlow;
-using Game.UI;
 
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 
 using Unity.Entities;
@@ -21,7 +18,9 @@ namespace AssetIconLibrary
 		protected override void OnUpdate()
 		{
 			if (ThumbnailPath is null or "")
+			{
 				return;
+			}
 
 			Enabled = false;
 
@@ -34,21 +33,25 @@ namespace AssetIconLibrary
 
 			for (var i = 0; i < prefabs.Count; i++)
 			{
-				if (!loadedIcons.TryGetValue(prefabs[i].name, out var thumbnail))
+				var prefab = prefabs[i];
+
+				if (!loadedIcons.TryGetValue(prefab.name, out var thumbnail))
 				{
 					continue;
 				}
 
-				if (prefabs[i].TryGet<UIObject>(out var uIObject))
+				if (prefab.TryGet<UIObject>(out var uIObject))
 				{
-					if (Mod.Settings.OverwriteIcons || string.IsNullOrWhiteSpace(uIObject.m_Icon))
+					if (!Mod.Settings.OverwriteIcons && HasVanillaIcon(prefab, uIObject))
 					{
-						uIObject.m_Icon = thumbnail;
+						continue;
 					}
+
+					uIObject.m_Icon = thumbnail;
 				}
 				else
 				{
-					uIObject = prefabs[i].AddComponent<UIObject>();
+					uIObject = prefab.AddComponent<UIObject>();
 					uIObject.m_Priority = 1;
 					uIObject.m_Icon = thumbnail;
 				}
@@ -57,6 +60,13 @@ namespace AssetIconLibrary
 			stopWatch.Stop();
 
 			Mod.Log.Info($"Prefab icon replacement completed in {stopWatch.Elapsed.TotalSeconds}s");
+		}
+
+		private static bool HasVanillaIcon(PrefabBase prefab, UIObject uIObject)
+		{
+			return uIObject.m_Group is not null
+				&& prefab.builtin
+				&& uIObject.m_Group.builtin;
 		}
 
 		private static Dictionary<string, string> GetAvailableIcons()
@@ -78,7 +88,7 @@ namespace AssetIconLibrary
 
 			if (Directory.Exists(FolderUtil.CustomContentFolder))
 			{
-				foreach (var item in Directory.EnumerateFiles(FolderUtil.CustomContentFolder))
+				foreach (var item in Directory.EnumerateFiles(FolderUtil.CustomContentFolder, "*", SearchOption.AllDirectories))
 				{
 					loadedIcons[Path.GetFileNameWithoutExtension(item)] = $"coui://cail/{Path.GetFileName(item)}";
 				}
