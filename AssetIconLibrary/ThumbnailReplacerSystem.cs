@@ -15,13 +15,15 @@ namespace AssetIconLibrary
 	{
 		internal static string ThumbnailPath { get; set; }
 
+		protected override void OnCreate()
+		{
+			base.OnCreate();
+
+			Enabled = false;
+		}
+
 		protected override void OnUpdate()
 		{
-			if (ThumbnailPath is null or "")
-			{
-				return;
-			}
-
 			Enabled = false;
 
 			var stopWatch = Stopwatch.StartNew();
@@ -30,6 +32,14 @@ namespace AssetIconLibrary
 			var prefabs = typeof(PrefabSystem)
 				.GetField("m_Prefabs", BindingFlags.NonPublic | BindingFlags.Instance)
 				.GetValue(prefabSystem) as List<PrefabBase>;
+
+#if DEBUG
+			Mod.Log.Info("Loaded Thumbnails");
+			foreach (var item in loadedIcons)
+			{
+				Mod.Log.InfoFormat("[{0}] = '{1}'", item.Key, item.Value);
+			}
+#endif
 
 			for (var i = 0; i < prefabs.Count; i++)
 			{
@@ -86,11 +96,19 @@ namespace AssetIconLibrary
 				loadedIcons[Path.GetFileNameWithoutExtension(item)] = $"coui://ail/{Path.GetFileName(item)}";
 			}
 
-			if (Directory.Exists(FolderUtil.CustomContentFolder))
+			if (Directory.Exists(FolderUtil.CustomThumbnailsFolder))
 			{
-				foreach (var item in Directory.EnumerateFiles(FolderUtil.CustomContentFolder, "*", SearchOption.AllDirectories))
+				foreach (var item in Directory.EnumerateFiles(FolderUtil.CustomThumbnailsFolder, "*", SearchOption.AllDirectories))
 				{
-					loadedIcons[Path.GetFileNameWithoutExtension(item)] = $"coui://cail/{Path.GetFileName(item)}";
+					loadedIcons[Path.GetFileNameWithoutExtension(item)] = $"coui://cail/{item.Substring(FolderUtil.CustomThumbnailsFolder.Length + 1)}";
+				}
+			}
+
+			foreach (var folderKvp in FolderUtil.ModThumbnailsFolders)
+			{
+				foreach (var item in Directory.EnumerateFiles(folderKvp.Key, "*", SearchOption.AllDirectories))
+				{
+					loadedIcons[Path.GetFileNameWithoutExtension(item)] = $"coui://{folderKvp.Value}/{item.Substring(folderKvp.Key.Length + 1)}";
 				}
 			}
 

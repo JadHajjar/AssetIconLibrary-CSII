@@ -40,8 +40,8 @@ namespace AssetIconLibrary
 		{
 			set
 			{
-				Directory.CreateDirectory(FolderUtil.CustomContentFolder);
-				Process.Start(FolderUtil.CustomContentFolder);
+				Directory.CreateDirectory(FolderUtil.CustomThumbnailsFolder);
+				Process.Start(FolderUtil.CustomThumbnailsFolder);
 			}
 		}
 

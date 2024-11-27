@@ -6,11 +6,14 @@ using Game;
 using Game.Modding;
 using Game.SceneFlow;
 
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Threading.Tasks;
+
+using Unity.Entities;
 
 namespace AssetIconLibrary
 {
@@ -29,18 +32,13 @@ namespace AssetIconLibrary
 			GameManager.instance.localizationManager.AddSource("en-US", new LocaleEN(Settings));
 			AssetDatabase.global.LoadSettings(nameof(AssetIconLibrary), Settings, new Setting(this) { DefaultBlock = true });
 
+			updateSystem.UpdateAt<ThumbnailReplacerSystem>(SystemUpdatePhase.PrefabReferences);
+
 			if (GameManager.instance.modManager.TryGetExecutableAsset(this, out var asset))
 			{
 				FolderUtil.ModPath = asset.path;
 
-				Task.Run(UnpackIcons);
-
-				if (Directory.Exists(FolderUtil.CustomContentFolder))
-				{
-					UIManager.defaultUISystem.AddHostLocation($"cail", FolderUtil.CustomContentFolder, false);
-				}
-
-				updateSystem.UpdateAt<ThumbnailReplacerSystem>(SystemUpdatePhase.PrefabReferences);
+				GameManager.instance.RegisterUpdater(Initialize);
 			}
 			else
 			{
@@ -48,15 +46,34 @@ namespace AssetIconLibrary
 			}
 		}
 
-		private async void UnpackIcons()
+		private void Initialize()
 		{
-			var targetFoler = Path.Combine(FolderUtil.ContentFolder, "Thumbnails");
-			var directoryInfo = new DirectoryInfo(targetFoler);
+			Task.Run(SetupAndUnpack);
+		}
+
+		private async void SetupAndUnpack()
+		{
+			await UnpackIcons();
+
+			foreach (var item in GameManager.instance.modManager)
+			{
+				var customFolder = Path.Combine(item.asset.path, ".ail");
+
+				if (Directory.Exists(customFolder))
+				{
+					FolderUtil.ModThumbnailsFolders[customFolder] = Guid.NewGuid().ToString();
+				}
+			}
+
+			GameManager.instance.RegisterUpdater(StartReplacement);
+		}
+
+		private async Task UnpackIcons()
+		{
+			var directoryInfo = new DirectoryInfo(FolderUtil.ThumbnailsFolder);
 
 			if (directoryInfo.Exists && directoryInfo.LastWriteTime > File.GetLastWriteTime(FolderUtil.ModPath))
 			{
-				SetThumbnailFolder(targetFoler);
-
 				Log.Info("Thumbnails up to date");
 
 				return;
@@ -72,22 +89,13 @@ namespace AssetIconLibrary
 
 			directoryInfo.Create();
 
-			var tasks = Directory.GetFiles(thumbnailFolder, "*.zip").Select(zip => Task.Run(() => UnpackZip(zip, targetFoler)));
+			var tasks = Directory.GetFiles(thumbnailFolder, "*.zip").Select(zip => Task.Run(() => UnpackZip(zip, FolderUtil.ThumbnailsFolder)));
 
 			await Task.WhenAll(tasks);
 
 			stopwatch.Stop();
 
 			Log.Info($"{directoryInfo.GetFiles().Length} icons finished unpacking in {stopwatch.Elapsed.TotalSeconds}s");
-
-			SetThumbnailFolder(targetFoler);
-		}
-
-		private static void SetThumbnailFolder(string targetFoler)
-		{
-			UIManager.defaultUISystem.AddHostLocation($"ail", targetFoler, false);
-
-			ThumbnailReplacerSystem.ThumbnailPath = targetFoler;
 		}
 
 		private void UnpackZip(string item, string targetFoler)
@@ -98,6 +106,23 @@ namespace AssetIconLibrary
 			zipArchive.ExtractToDirectory(targetFoler);
 		}
 
+		private void StartReplacement()
+		{
+			UIManager.defaultUISystem.AddHostLocation($"ail", FolderUtil.ThumbnailsFolder, false);
+
+			if (Directory.Exists(FolderUtil.CustomThumbnailsFolder))
+			{
+				UIManager.defaultUISystem.AddHostLocation($"cail", FolderUtil.CustomThumbnailsFolder, true);
+			}
+
+			foreach (var item in FolderUtil.ModThumbnailsFolders)
+			{
+				UIManager.defaultUISystem.AddHostLocation($"cmail-{item.Value}", item.Key, false);
+			}
+
+			World.DefaultGameObjectInjectionWorld.GetExistingSystemManaged<ThumbnailReplacerSystem>().Enabled = true;
+		}
+
 		public void OnDispose()
 		{
 			Log.Info(nameof(OnDispose));
@@ -106,6 +131,11 @@ namespace AssetIconLibrary
 			{
 				Settings.UnregisterInOptionsUI();
 				Settings = null;
+			}
+
+			if (Directory.Exists(FolderUtil.CustomThumbnailsFolder))
+			{
+				UIManager.defaultUISystem.RemoveHostLocation($"cail");
 			}
 		}
 	}
