@@ -1,8 +1,35 @@
 [
   {
     "Stable": true,
+    "Version": "1.3.2",
+    "Date": "2024-11-28",
+    "ChangeGroups": [
+      {
+        "Name": "Hotfix",
+        "Changes": [
+          "Fixed normal and custom thumbnail folders being mixed up."
+        ]
+      }
+    ]
+  },
+  {
+    "Stable": true,
+    "Version": "1.3.1",
+    "Date": "2024-11-28",
+    "ChangeGroups": [
+      {
+        "Name": "Changes",
+        "Changes": [
+          "Added support for custom 'Icon Packs'. Add a folder called 'AIL' in your mod's root, include prefab icons in it, and AIL will automatically replace prefabs' icons using the ones from your pack. These icons take priority over Asset Icon Library's built-in icons.",
+          "Fixed Custom Thumbnails not properly working with sub-folders."
+        ]
+      }
+    ]
+  },
+  {
+    "Stable": true,
     "Version": "1.3",
-    "Date": "2024-11-11",
+    "Date": "2024-11-25",
     "ChangeGroups": [
       {
         "Name": "Changes",

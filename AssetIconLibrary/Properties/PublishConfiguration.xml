@@ -44,15 +44,12 @@ This allows you to add your own thumbnails without needing to overwrite any file
   <Screenshot Value="Properties/Screenshot10.png" />
   <Tag Value="Code Mod" />
   <ForumLink Value="https://forum.paradoxplaza.com/forum/threads/asset-icon-library.1672325/" />
-  <ModVersion Value="1.3" />
+  <ModVersion Value="1.3.2" />
   <GameVersion Value="1.*" />
   <ChangeLog>
-# v1.3
-## Changes
-* Added icons for the UK Region Pack.
-* Updated some icons for the French Region Pack that were not up to AIL standards.
-* Fixed the 'Overwrite Existing Icons' option not working properly.
-* Custom Thumbnails are now loaded from sub-folders too.
+# v1.3.2
+## Hotfix
+* Fixed normal and custom thumbnail folders being mixed up.
 </ChangeLog>
   <ExternalLink Type="discord" Url="https://discord.gg/E4k8ZEtRxd" />
   <ExternalLink Type="github" Url="https://github.com/JadHajjar/AssetIconLibrary-CSII" />

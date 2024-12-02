@@ -18,8 +18,8 @@ namespace AssetIconLibrary
 
 		static FolderUtil()
 		{
-			ThumbnailsFolder =Path.Combine(EnvPath.kUserDataPath, "ModsData", nameof(AssetIconLibrary), "CustomThumbnails");
-			CustomThumbnailsFolder = Path.Combine(EnvPath.kUserDataPath, "ModsData", nameof(AssetIconLibrary), "Thumbnails");
+			ThumbnailsFolder =Path.Combine(EnvPath.kUserDataPath, "ModsData", nameof(AssetIconLibrary), "Thumbnails");
+			CustomThumbnailsFolder = Path.Combine(EnvPath.kUserDataPath, "ModsData", nameof(AssetIconLibrary), "CustomThumbnails");
 		}
 	}
 }

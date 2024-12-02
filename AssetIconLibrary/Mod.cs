@@ -57,7 +57,7 @@ namespace AssetIconLibrary
 
 			foreach (var item in GameManager.instance.modManager)
 			{
-				var customFolder = Path.Combine(item.asset.path, ".ail");
+				var customFolder = Path.Combine(Path.GetDirectoryName(item.asset.path), "ail");
 
 				if (Directory.Exists(customFolder))
 				{
