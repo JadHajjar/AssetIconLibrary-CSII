@@ -42,6 +42,12 @@ namespace AssetIconLibrary
 
 				if (prefab.TryGet<UIObject>(out var uIObject))
 				{
+#if DEBUG
+					if (HasVanillaIcon(prefab, uIObject))
+					{
+						Mod.Log.Info("VANILLAICON: " + prefab.name);
+					}
+#endif
 					if (!Mod.Settings.OverwriteIcons && HasVanillaIcon(prefab, uIObject))
 					{
 						continue;
