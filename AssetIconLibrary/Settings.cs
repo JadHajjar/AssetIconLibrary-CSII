@@ -2,40 +2,50 @@
 using Colossal.IO.AssetDatabase;
 
 using Game.Modding;
+using Game.SceneFlow;
 using Game.Settings;
+using Game.UI.Widgets;
 
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 
+using Unity.Entities;
+
 namespace AssetIconLibrary
 {
-
 	[FileLocation(nameof(AssetIconLibrary))]
-	[SettingsUIGroupOrder("Settings")]
-	[SettingsUIShowGroupName("Settings")]
+	[SettingsUIGroupOrder(SETTINGS_GROUP, CUSTOM_GROUP)]
+	[SettingsUIShowGroupName(SETTINGS_GROUP, CUSTOM_GROUP)]
 	public class Setting : ModSetting
 	{
-		public const string kSection = "Main";
-
-		public const string kButtonGroup = "Button";
-		public const string kToggleGroup = "Toggle";
-		public const string kSliderGroup = "Slider";
-		public const string kDropdownGroup = "Dropdown";
+		public const string MAIN_SECTION = "Main";
+		public const string SETTINGS_GROUP = "Settings";
+		public const string CUSTOM_GROUP = "Custom";
 
 		public Setting(IMod mod) : base(mod)
 		{
 
 		}
 
-		[SettingsUIHidden]
-		public bool DefaultBlock { get; set; }
+		[SettingsUISection(MAIN_SECTION, SETTINGS_GROUP)]
+		[SettingsUIMultilineText]
+		[SettingsUIHideByCondition(typeof(Setting), nameof(IsIngame))]
+		public string RestartRequired => string.Empty;
 
-		[SettingsUISection("Main", "Settings")]
+		[SettingsUISection(MAIN_SECTION, SETTINGS_GROUP)]
+		[SettingsUIDropdown(typeof(Setting), nameof(GetStyleDropdownItems))]
+		public string IconsStyle { get; set; } = "White";
+
+		[SettingsUISection(MAIN_SECTION, SETTINGS_GROUP)]
 		public bool OverwriteIcons { get; set; } = true;
 
+		[SettingsUISection(MAIN_SECTION, CUSTOM_GROUP)]
+		[SettingsUIMultilineText]
+		public string CustomIcons => string.Empty;
+
 		[SettingsUIButton]
-		[SettingsUISection("Main", "Settings")]
+		[SettingsUISection(MAIN_SECTION, CUSTOM_GROUP)]
 		public bool OpenCustomFolders
 		{
 			set
@@ -48,6 +58,30 @@ namespace AssetIconLibrary
 		public override void SetDefaults()
 		{
 
+		}
+
+		public bool IsIngame()
+		{
+			return GameManager.instance.gameMode == Game.GameMode.MainMenu;
+		}
+
+		public DropdownItem<string>[] GetStyleDropdownItems()
+		{
+			var items = new DropdownItem<string>[]
+			{
+				new()
+				{
+					value = "White",
+					displayName = GetOptionLabelLocaleID("White"),
+				},
+				new()
+				{
+					value = "Colored",
+					displayName = GetOptionLabelLocaleID("Colored"),
+				}
+			};
+
+			return items;
 		}
 	}
 
@@ -64,15 +98,26 @@ namespace AssetIconLibrary
 			return new Dictionary<string, string>
 			{
 				{ m_Setting.GetSettingsLocaleID(), "Asset Icon Library" },
-				{ m_Setting.GetOptionTabLocaleID("Main"), "Main" },
+				{ m_Setting.GetOptionTabLocaleID(Setting.MAIN_SECTION), "Main" },
 
-				{ m_Setting.GetOptionGroupLocaleID("Settings"), "Settings" },
+				{ m_Setting.GetOptionGroupLocaleID(Setting.SETTINGS_GROUP), "Settings" },
+				{ m_Setting.GetOptionGroupLocaleID(Setting.CUSTOM_GROUP), "Custom" },
+
+				{ m_Setting.GetOptionLabelLocaleID(nameof(Setting.RestartRequired)), "⚠️  Changing these settings requires restarting your game to apply your changes." },
 
 				{ m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverwriteIcons)), "Overwrite Existing Icons" },
-				{ m_Setting.GetOptionDescLocaleID(nameof(Setting.OverwriteIcons)), $"While enabled, Asset Icon Library will overwrite vanilla icons and icons from other mods when available." },
+				{ m_Setting.GetOptionDescLocaleID(nameof(Setting.OverwriteIcons)), $"While enabled, Asset Icon Library will overwrite vanilla assets' icons, even if the assets have an icon already." },
+
+				{ m_Setting.GetOptionLabelLocaleID(nameof(Setting.IconsStyle)), "Icon Style" },
+				{ m_Setting.GetOptionDescLocaleID(nameof(Setting.IconsStyle)), $"Change what style to use for asset icons where applicable." },
+
+				{ m_Setting.GetOptionLabelLocaleID(nameof(Setting.CustomIcons)), "Use custom icons for assets by placing the image files with the assets' name inside the custom thumbnails folder." },
 
 				{ m_Setting.GetOptionLabelLocaleID(nameof(Setting.OpenCustomFolders)), "Open Custom Thumbnails Folder" },
 				{ m_Setting.GetOptionDescLocaleID(nameof(Setting.OpenCustomFolders)), $"Add personal custom thumbnails to use over the vanilla or 'Asset Icon Library' icons." },
+
+				{ m_Setting.GetOptionLabelLocaleID("White"), "White & No Props" },
+				{ m_Setting.GetOptionLabelLocaleID("Colored"), "Colored With Props" },
 			};
 		}
 

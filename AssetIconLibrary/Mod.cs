@@ -30,7 +30,7 @@ namespace AssetIconLibrary
 			Settings = new Setting(this);
 			Settings.RegisterInOptionsUI();
 			GameManager.instance.localizationManager.AddSource("en-US", new LocaleEN(Settings));
-			AssetDatabase.global.LoadSettings(nameof(AssetIconLibrary), Settings, new Setting(this) { DefaultBlock = true });
+			AssetDatabase.global.LoadSettings(nameof(AssetIconLibrary), Settings, new Setting(this));
 
 			updateSystem.UpdateAt<ThumbnailReplacerSystem>(SystemUpdatePhase.PrefabReferences);
 

@@ -1,4 +1,6 @@
-﻿using Game;
+﻿using Colossal.Serialization.Entities;
+
+using Game;
 using Game.Prefabs;
 
 using System;
@@ -20,10 +22,25 @@ namespace AssetIconLibrary
 			Enabled = false;
 		}
 
+		protected override void OnGamePreload(Purpose purpose, GameMode mode)
+		{
+			base.OnGamePreload(purpose, mode);
+
+			if (mode is GameMode.Game or GameMode.Editor)
+			{
+				Enabled = true;
+			}
+		}
+
 		protected override void OnUpdate()
 		{
 			Enabled = false;
 
+			ReplaceThumbnails();
+		}
+
+		public void ReplaceThumbnails()
+		{
 			var stopWatch = Stopwatch.StartNew();
 			var loadedIcons = GetAvailableIcons();
 			var prefabSystem = World.GetExistingSystemManaged<PrefabSystem>();
@@ -87,9 +104,14 @@ namespace AssetIconLibrary
 				}
 			}
 
-			foreach (var item in Directory.EnumerateFiles(FolderUtil.ThumbnailsFolder))
+			foreach (var item in Directory.EnumerateFiles(FolderUtil.ThumbnailsFolder, "*", SearchOption.AllDirectories))
 			{
-				loadedIcons[Path.GetFileNameWithoutExtension(item)] = $"coui://ail/{Path.GetFileName(item)}";
+				var folder = Path.GetFileName(Path.GetDirectoryName(item));
+
+				if (folder == "Thumbnails" || folder == Mod.Settings.IconsStyle)
+				{
+					loadedIcons[Path.GetFileNameWithoutExtension(item)] = $"coui://ail/{item.Substring(FolderUtil.ThumbnailsFolder.Length + 1).Replace('\\', '/')}";
+				}
 			}
 
 			foreach (var folderKvp in FolderUtil.ModThumbnailsFolders)

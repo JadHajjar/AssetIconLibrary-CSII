@@ -5,7 +5,7 @@
 		<LangVersion>9</LangVersion>
 		<TargetFramework>net472</TargetFramework>
 		<Configurations>Debug;Release</Configurations>
-		<Version>1.3.3</Version>
+		<Version>1.5</Version>
 		<FileVersion>$(Version)</FileVersion>
 		<AssemblyVersion>$(Version)</AssemblyVersion>
 		<Company>T. D. W.</Company>
@@ -27,7 +27,7 @@
 			<AutoZipTarget>"$(DeployDir)\.Thumbnails\Pack"</AutoZipTarget>
 		</PropertyGroup>
 
-		<Exec Command="$(AutoZipFolder) $(AutoZipSource) $(AutoZipTarget) 15728640" />
+		<Exec Command="$(AutoZipFolder) $(AutoZipSource) $(AutoZipTarget) 26214400" />
 	</Target>
 
 	<Target Name="UpdatePublishConfiguration" BeforeTargets="Publish" Condition="'$(ModPublisherCommand)'=='NewVersion'">

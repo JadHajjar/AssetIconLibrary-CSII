@@ -1,6 +1,42 @@
 [
   {
     "Stable": true,
+    "Version": "1.5",
+    "Date": "2024-11-25",
+    "ChangeGroups": [
+      {
+        "Name": "New Feature",
+        "Changes": [
+          "Added an 'Icon style' option that lets you select between different styles of icons.",
+          "Added a white and color-coded with no props 'icon style'. This style includes a different accent color per building level."
+        ]
+      },
+      {
+        "Name": "Changes",
+        "Changes": [
+          "Updated hundreds of icons with for various reasons, this includes updates to parking and park icons to help visibility.",
+          "Thumbnails are now refreshed when reloading into a save, in case you change options or want to refresh your custom thumbnails."
+        ]
+      }
+    ]
+  },
+  {
+    "Stable": true,
+    "Version": "1.4",
+    "Date": "2024-11-25",
+    "ChangeGroups": [
+      {
+        "Name": "Changes",
+        "Changes": [
+          "Added icons for the Japan Region Pack.",
+          "Updated over 2000 icons for vanilla assets.",
+          "Added a few missing icons for some assets."
+        ]
+      }
+    ]
+  },
+  {
+    "Stable": true,
     "Version": "1.3.3",
     "Date": "2024-12-02",
     "ChangeGroups": [
