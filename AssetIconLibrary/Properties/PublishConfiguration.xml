@@ -7,7 +7,7 @@
 # Asset Icon Library
 Add thumbnails to all of the game's assets and region packs!
 
-From props, to buildings, and brands' billboards and signs. Add over **10'000 thumbnails** to your game, and counting!
+From props, to buildings, and brands' billboards and signs. Add over **27'000 thumbnails** to your game, and counting!
 
 
 ## A community effort.
@@ -32,31 +32,32 @@ In Asset Icon Library's settings page, you can open the "Custom Thumbnails Folde
 This allows you to add your own thumbnails without needing to overwrite any file in the mod itself, where your thumbnails could be lost on the next mod update.
 </LongDescription>
   <Thumbnail Value="Properties/Thumbnail.png" />
-  <Screenshot Value="Properties/Screenshot01.png" />
-  <Screenshot Value="Properties/Screenshot02.png" />
-  <Screenshot Value="Properties/Screenshot03.png" />
-  <Screenshot Value="Properties/Screenshot04.png" />
-  <Screenshot Value="Properties/Screenshot05.png" />
-  <Screenshot Value="Properties/Screenshot06.png" />
-  <Screenshot Value="Properties/Screenshot07.png" />
-  <Screenshot Value="Properties/Screenshot08.png" />
-  <Screenshot Value="Properties/Screenshot09.png" />
-  <Screenshot Value="Properties/Screenshot10.png" />
+  <Screenshot Value="Properties/Screenshot01.jpg" />
+  <Screenshot Value="Properties/Screenshot02.jpg" />
+  <Screenshot Value="Properties/Screenshot03.jpg" />
+  <Screenshot Value="Properties/Screenshot04.jpg" />
+  <Screenshot Value="Properties/Screenshot05.jpg" />
+  <Screenshot Value="Properties/Screenshot06.jpg" />
+  <Screenshot Value="Properties/Screenshot07.jpg" />
+  <Screenshot Value="Properties/Screenshot08.jpg" />
+  <Screenshot Value="Properties/Screenshot09.jpg" />
+  <Screenshot Value="Properties/Screenshot10.jpg" />
   <Tag Value="Code Mod" />
   <ForumLink Value="https://forum.paradoxplaza.com/forum/threads/asset-icon-library.1672325/" />
-  <ModVersion Value="1.5" />
+  <ModVersion Value="2.0" />
   <GameVersion Value="*" />
   <ChangeLog>
-# v1.5
-## New Feature
-* Added an 'Icon style' option that lets you select between different styles of icons.
-* Added a white and color-coded with no props 'icon style'. This style includes a different accent color per building level.
+# v2.0
+*v2 Icon Overhaul*
 
-## Changes
-* Updated hundreds of icons with for various reasons, this includes updates to parking and park icons to help visibility.
-* Thumbnails are now refreshed when reloading into a save, in case you change options or want to refresh your custom thumbnails.
+## New Icons and Updates
+* Added icons for every. single. branding prop, as well as updated all existing branding props. Totaling over 11'500 icons alone.
+* Re-worked 'Colored with Props' style to have the same angle as all AIL icons.
+* Re-worked 'White &amp; No Props' style to have the same angle as all AIL icons.
+* Re-worked all existing non-building icons to have the same angle as all AIL icons and improved brightness.
 </ChangeLog>
   <ExternalLink Type="discord" Url="https://discord.gg/E4k8ZEtRxd" />
   <ExternalLink Type="github" Url="https://github.com/JadHajjar/AssetIconLibrary-CSII" />
   <ExternalLink Type="patreon" Url="https://www.patreon.com/tdwsvillage" />
+  <Dependency Id="77240" />
 </Publish>

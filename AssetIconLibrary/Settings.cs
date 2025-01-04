@@ -35,7 +35,7 @@ namespace AssetIconLibrary
 
 		[SettingsUISection(MAIN_SECTION, SETTINGS_GROUP)]
 		[SettingsUIDropdown(typeof(Setting), nameof(GetStyleDropdownItems))]
-		public string IconsStyle { get; set; } = "White";
+		public string IconsStyle { get; set; } = "ColoredPropless";
 
 		[SettingsUISection(MAIN_SECTION, SETTINGS_GROUP)]
 		public bool OverwriteIcons { get; set; } = true;
@@ -69,6 +69,11 @@ namespace AssetIconLibrary
 		{
 			var items = new DropdownItem<string>[]
 			{
+				new()
+				{
+					value = "ColoredPropless",
+					displayName = GetOptionLabelLocaleID("ColoredPropless"),
+				},
 				new()
 				{
 					value = "White",
@@ -116,6 +121,7 @@ namespace AssetIconLibrary
 				{ m_Setting.GetOptionLabelLocaleID(nameof(Setting.OpenCustomFolders)), "Open Custom Thumbnails Folder" },
 				{ m_Setting.GetOptionDescLocaleID(nameof(Setting.OpenCustomFolders)), $"Add personal custom thumbnails to use over the vanilla or 'Asset Icon Library' icons." },
 
+				{ m_Setting.GetOptionLabelLocaleID("ColoredPropless"), "Colored & No Props" },
 				{ m_Setting.GetOptionLabelLocaleID("White"), "White & No Props" },
 				{ m_Setting.GetOptionLabelLocaleID("Colored"), "Colored With Props" },
 			};

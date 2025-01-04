@@ -96,14 +96,6 @@ namespace AssetIconLibrary
 		{
 			var loadedIcons = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase);
 
-			foreach (var item in Directory.EnumerateFiles(FolderUtil.ThumbnailsFolder, "Brand_*.png"))
-			{
-				for (var i = 0; i < _brandGroups.Length; i++)
-				{
-					loadedIcons[_brandGroups[i] + Path.GetFileNameWithoutExtension(item).Substring(6)] = $"coui://ail/{Path.GetFileName(item)}";
-				}
-			}
-
 			foreach (var item in Directory.EnumerateFiles(FolderUtil.ThumbnailsFolder, "*", SearchOption.AllDirectories))
 			{
 				var folder = Path.GetFileName(Path.GetDirectoryName(item));
@@ -132,68 +124,5 @@ namespace AssetIconLibrary
 
 			return loadedIcons;
 		}
-
-		private static readonly string[] _brandGroups = new[]
-		{
-			"SignFrontwayLarge02 - ",
-			"SignFrontwayMedium01 - ",
-			"SignFrontwayMedium02 - ",
-			"SignFrontwaySmall01 - ",
-			"SignFrontwaySmall02 - ",
-			"SignNeonLarge01 - ",
-			"SignNeonLarge02 - ",
-			"SignNeonMedium01 - ",
-			"SignNeonMedium02 - ",
-			"SignNeonSmall01 - ",
-			"SignNeonSmall02 - ",
-			"SignRoundLarge01 - ",
-			"SignSidewayLarge01 - ",
-			"SignSidewayLarge02 - ",
-			"SignSidewayMedium01 - ",
-			"SignSidewayMedium02 - ",
-			"SignSidewaySmall01 - ",
-			"SignSidewaySmall02 - ",
-			"AStand01 - ",
-			"AStand02 - ",
-			"Stand01 - ",
-			"Stand02 - ",
-			"Screen02 - ",
-			"SignFrontwayLarge01 - ",
-			"BillboardHuge02 - ",
-			"BillboardLarge02 - ",
-			"BillboardMedium02 - ",
-			"BillboardSmall01 - ",
-			"BillboardSmall02 - ",
-			"BillboardRoundLarge01 - ",
-			"BillboardRoundMedium01 - ",
-			"BillboardRoundSmall01 - ",
-			"BillboardWallHuge02 - ",
-			"BillboardWallLarge01 - ",
-			"BillboardWallLarge03 - ",
-			"BillboardWallMedium01 - ",
-			"BillboardWallMedium02 - ",
-			"BillboardWallSmall01 - ",
-			"BillboardWallSmall02 - ",
-			"BillboardWallSmall03 - ",
-			"BillboardWallSmall04 - ",
-			"GasStationPylon01 - ",
-			"GasStationPylon02 - ",
-			"GasStationPylon03 - ",
-			"PosterHuge01 - ",
-			"PosterHuge02 - ",
-			"PosterLarge01 - ",
-			"PosterLarge02 - ",
-			"PosterMedium01 - ",
-			"PosterMedium02 - ",
-			"PosterSmall01 - ",
-			"PosterSmall02 - ",
-			"Screen01 - ",
-			"BillboardLarge01 - ",
-			"BillboardMedium01 - ",
-			"BillboardWallHuge01 - ",
-			"BillboardWallLarge02 - ",
-			"BillboardWallLarge04 - ",
-			"BillboardHuge01 - ",
-		};
 	}
 }

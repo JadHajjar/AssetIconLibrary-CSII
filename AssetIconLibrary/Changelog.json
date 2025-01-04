@@ -1,6 +1,37 @@
 [
   {
     "Stable": true,
+    "Version": "2.0",
+    "Date": "2025-01-05",
+    "Tagline": "v2 Icon Overhaul",
+    "ChangeGroups": [
+      {
+        "Name": "New Icons and Updates",
+        "Changes": [
+          "Added icons for every. single. branding prop, as well as updated all existing branding props. Totaling over 11'500 icons alone.",
+          "Re-worked 'Colored with Props' style to have the same angle as all AIL icons.",
+          "Re-worked 'White & No Props' style to have the same angle as all AIL icons.",
+          "Re-worked all existing non-building icons to have the same angle as all AIL icons and improved brightness."
+        ]
+      }
+    ]
+  },
+  {
+    "Stable": true,
+    "Version": "1.6",
+    "Date": "2024-11-25",
+    "ChangeGroups": [
+      {
+        "Name": "New Icons and Updates",
+        "Changes": [
+          "Added the 'Colored and No Props' style option, selected by default.",
+          "Remade all prop icons and update a few others from other categories."
+        ]
+      }
+    ]
+  },
+  {
+    "Stable": true,
     "Version": "1.5",
     "Date": "2024-11-25",
     "ChangeGroups": [
