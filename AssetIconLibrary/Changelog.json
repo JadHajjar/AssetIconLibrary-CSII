@@ -1,6 +1,28 @@
 [
   {
     "Stable": true,
+    "Version": "2.1",
+    "Date": "2025-01-27",
+    "ChangeGroups": [
+      {
+        "Name": "Region Pack Icons",
+        "Changes": [
+          "Added icons for the Eastern Europe Region Pack."
+        ]
+      },
+      {
+        "Name": "Other Changes",
+        "Changes": [
+          "Added support for non-code-mods to have custom AIL thumbnail folders.",
+          "Added support for '.ail' folders as well as 'ail' folders in custom mods.",
+          "Added versioning for thumbnail unpacking. This essentially helps to make sure your icons are always up to date.",
+          "Thumbnails from AIL are now hidden from the game to disable their automatic load."
+        ]
+      }
+    ]
+  },
+  {
+    "Stable": true,
     "Version": "2.0",
     "Date": "2025-01-05",
     "Tagline": "v2 Icon Overhaul",

@@ -1,5 +1,7 @@
 ﻿using Colossal.IO.AssetDatabase;
 using Colossal.Logging;
+using Colossal.PSI.Common;
+using Colossal.PSI.PdxSdk;
 using Colossal.UI;
 
 using Game;
@@ -44,35 +46,71 @@ namespace AssetIconLibrary
 			{
 				Log.Error("Load Failed, could not get executable path");
 			}
+
+			FolderUtil.Output(Log);
 		}
 
 		private void Initialize()
 		{
-			Task.Run(SetupAndUnpack);
+			Task.Run(UnpackAndSetup);
 		}
 
-		private async void SetupAndUnpack()
+		private async void UnpackAndSetup()
 		{
-			await UnpackIcons();
-
-			foreach (var item in GameManager.instance.modManager)
+			try
 			{
-				var customFolder = Path.Combine(Path.GetDirectoryName(item.asset.path), "ail");
+				await UnpackIcons();
 
-				if (Directory.Exists(customFolder))
+				foreach (var item in GameManager.instance.modManager)
 				{
-					FolderUtil.ModThumbnailsFolders[customFolder] = Guid.NewGuid().ToString();
+					AddModFolderIfExists(Path.GetDirectoryName(item.asset.path));
 				}
+
+				var mods = await PlatformManager.instance.GetPSI<PdxSdkPlatform>("PdxSdk").GetModsInActivePlayset();
+
+				if (mods != null)
+				{
+					foreach (var item in mods)
+					{
+						AddModFolderIfExists(item.LocalData?.FolderAbsolutePath);
+					}
+				}
+
+				GameManager.instance.RegisterUpdater(StartReplacement);
+			}
+			catch (Exception ex)
+			{
+				Log.Error(ex, "Failed to unpack icons");
+			}
+		}
+
+		private void AddModFolderIfExists(string folder)
+		{
+			if (folder is null)
+			{
+				return;
 			}
 
-			GameManager.instance.RegisterUpdater(StartReplacement);
+			var dotAilFolder = Path.Combine(folder, ".ail");
+			var ailFolder = Path.Combine(folder, "ail");
+
+			if (Directory.Exists(dotAilFolder) && !FolderUtil.ModThumbnailsFolders.Contains(dotAilFolder))
+			{
+				FolderUtil.ModThumbnailsFolders.Add(dotAilFolder);
+			}
+
+			if (Directory.Exists(ailFolder) && !FolderUtil.ModThumbnailsFolders.Contains(ailFolder))
+			{
+				FolderUtil.ModThumbnailsFolders.Add(ailFolder);
+			}
 		}
 
 		private async Task UnpackIcons()
 		{
 			var directoryInfo = new DirectoryInfo(FolderUtil.ThumbnailsFolder);
+			var versionFilePath = Path.Combine(FolderUtil.ThumbnailsFolder, ".version");
 
-			if (directoryInfo.Exists && directoryInfo.LastWriteTime > File.GetLastWriteTime(FolderUtil.ModPath))
+			if (File.Exists(versionFilePath) && File.ReadAllText(versionFilePath) == typeof(Mod).Assembly.GetName().Version.ToString())
 			{
 				Log.Info("Thumbnails up to date");
 
@@ -93,6 +131,8 @@ namespace AssetIconLibrary
 
 			await Task.WhenAll(tasks);
 
+			File.WriteAllText(versionFilePath, typeof(Mod).Assembly.GetName().Version.ToString());
+
 			stopwatch.Stop();
 
 			Log.Info($"{directoryInfo.GetFiles().Length} icons finished unpacking in {stopwatch.Elapsed.TotalSeconds}s");
@@ -108,16 +148,17 @@ namespace AssetIconLibrary
 
 		private void StartReplacement()
 		{
-			UIManager.defaultUISystem.AddHostLocation($"ail", FolderUtil.ThumbnailsFolder, false);
+			UIManager.defaultUISystem.AddHostLocation($"ail", FolderUtil.ThumbnailsFolder, false, int.MaxValue);
 
 			if (Directory.Exists(FolderUtil.CustomThumbnailsFolder))
 			{
-				UIManager.defaultUISystem.AddHostLocation($"cail", FolderUtil.CustomThumbnailsFolder, true);
+				UIManager.defaultUISystem.AddHostLocation($"ail", FolderUtil.CustomThumbnailsFolder, true, -1);
 			}
 
+			var index = 0;
 			foreach (var item in FolderUtil.ModThumbnailsFolders)
 			{
-				UIManager.defaultUISystem.AddHostLocation($"cmail-{item.Value}", item.Key, false);
+				UIManager.defaultUISystem.AddHostLocation($"ail", item, false, index++);
 			}
 
 			World.DefaultGameObjectInjectionWorld.GetExistingSystemManaged<ThumbnailReplacerSystem>().Enabled = true;
@@ -135,7 +176,7 @@ namespace AssetIconLibrary
 
 			if (Directory.Exists(FolderUtil.CustomThumbnailsFolder))
 			{
-				UIManager.defaultUISystem.RemoveHostLocation($"cail");
+				UIManager.defaultUISystem.RemoveHostLocation($"ail");
 			}
 		}
 	}

@@ -100,17 +100,17 @@ namespace AssetIconLibrary
 			{
 				var folder = Path.GetFileName(Path.GetDirectoryName(item));
 
-				if (folder == "Thumbnails" || folder == Mod.Settings.IconsStyle)
+				if (folder == ".Thumbnails" || folder == Mod.Settings.IconsStyle)
 				{
-					loadedIcons[Path.GetFileNameWithoutExtension(item)] = $"coui://ail/{item.Substring(FolderUtil.ThumbnailsFolder.Length + 1).Replace('\\', '/')}";
+					addIcon(item, FolderUtil.ThumbnailsFolder);
 				}
 			}
 
-			foreach (var folderKvp in FolderUtil.ModThumbnailsFolders)
+			foreach (var folder in FolderUtil.ModThumbnailsFolders)
 			{
-				foreach (var item in Directory.EnumerateFiles(folderKvp.Key, "*", SearchOption.AllDirectories))
+				foreach (var item in Directory.EnumerateFiles(folder, "*", SearchOption.AllDirectories))
 				{
-					loadedIcons[Path.GetFileNameWithoutExtension(item)] = $"coui://cmail-{folderKvp.Value}/{item.Substring(folderKvp.Key.Length + 1).Replace('\\', '/')}";
+					addIcon(item, folder);
 				}
 			}
 
@@ -118,11 +118,18 @@ namespace AssetIconLibrary
 			{
 				foreach (var item in Directory.EnumerateFiles(FolderUtil.CustomThumbnailsFolder, "*", SearchOption.AllDirectories))
 				{
-					loadedIcons[Path.GetFileNameWithoutExtension(item)] = $"coui://cail/{item.Substring(FolderUtil.CustomThumbnailsFolder.Length + 1).Replace('\\', '/')}";
+					addIcon(item, FolderUtil.CustomThumbnailsFolder);
 				}
 			}
 
 			return loadedIcons;
+
+			void addIcon(string path, string startingFolder)
+			{
+				var name = Path.GetFileNameWithoutExtension(path);
+
+				loadedIcons[name] = $"coui://ail/{path.Substring(startingFolder.Length + 1).Replace('\\', '/')}";
+			}
 		}
 	}
 }

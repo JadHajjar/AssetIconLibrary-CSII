@@ -44,17 +44,18 @@ This allows you to add your own thumbnails without needing to overwrite any file
   <Screenshot Value="Properties/Screenshot10.jpg" />
   <Tag Value="Code Mod" />
   <ForumLink Value="https://forum.paradoxplaza.com/forum/threads/asset-icon-library.1672325/" />
-  <ModVersion Value="2.0" />
+  <ModVersion Value="2.1" />
   <GameVersion Value="*" />
   <ChangeLog>
-# v2.0
-*v2 Icon Overhaul*
+# v2.1
+## Region Pack Icons
+* Added icons for the Eastern Europe Region Pack.
 
-## New Icons and Updates
-* Added icons for every. single. branding prop, as well as updated all existing branding props. Totaling over 11'500 icons alone.
-* Re-worked 'Colored with Props' style to have the same angle as all AIL icons.
-* Re-worked 'White &amp; No Props' style to have the same angle as all AIL icons.
-* Re-worked all existing non-building icons to have the same angle as all AIL icons and improved brightness.
+## Other Changes
+* Added support for non-code-mods to have custom AIL thumbnail folders.
+* Added support for '.ail' folders as well as 'ail' folders in custom mods.
+* Added versioning for thumbnail unpacking. This essentially helps to make sure your icons are always up to date.
+* Thumbnails from AIL are now hidden from the game to disable their automatic load.
 </ChangeLog>
   <ExternalLink Type="discord" Url="https://discord.gg/E4k8ZEtRxd" />
   <ExternalLink Type="github" Url="https://github.com/JadHajjar/AssetIconLibrary-CSII" />
