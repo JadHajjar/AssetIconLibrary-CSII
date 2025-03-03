@@ -6,6 +6,7 @@ From props, to buildings, and brands' billboards and signs. Add over **34'000 ic
 
 
 
+
 ## Where will I see the icons?
 Asset Icon Library populates the assets' icons in:
 * The vanilla toolbars
@@ -15,11 +16,13 @@ Asset Icon Library populates the assets' icons in:
 
 
 
+
 ## Custom Styles
 In Asset Icon Library's settings page, you can change the style of building icons from the selection of:
 * Colored and no props
 * White and no props
 * Colored with props
+
 
 
 
@@ -32,6 +35,7 @@ Files must match the asset's prefab ID with this pattern: 'PrefabType.PrefabName
 For example: 'BuildingPrefab.EU_CommercialHigh01_L4_2x4.png'
 
 You can however use the prefab name alone, although less accurate.
+
 
 
 
@@ -56,6 +60,7 @@ For example, the following JSON will replace Asset1 with VanillaAsset0's icon, a
    "PT.Asset1": "PT.VanillaAsset0",
    "PT.Asset2": "Icons\\ABC.png"
 }
+
 
 ### Using the AIL API
 If you have a code mod, you can supply AIL with an asset icon map, similar to the one above.
