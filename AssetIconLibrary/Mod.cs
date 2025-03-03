@@ -1,7 +1,9 @@
 ﻿using Colossal.IO.AssetDatabase;
+using Colossal.Json;
 using Colossal.Logging;
 using Colossal.PSI.Common;
 using Colossal.PSI.PdxSdk;
+using Colossal.Reflection;
 using Colossal.UI;
 
 using Game;
@@ -9,10 +11,12 @@ using Game.Modding;
 using Game.SceneFlow;
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
 using Unity.Entities;
@@ -63,7 +67,7 @@ namespace AssetIconLibrary
 
 				foreach (var item in GameManager.instance.modManager)
 				{
-					AddModFolderIfExists(Path.GetDirectoryName(item.asset.path));
+					AddModFolderIfExists(Path.GetDirectoryName(item.asset.path), item.asset?.assembly);
 				}
 
 				var mods = await PlatformManager.instance.GetPSI<PdxSdkPlatform>("PdxSdk").GetModsInActivePlayset();
@@ -84,7 +88,7 @@ namespace AssetIconLibrary
 			}
 		}
 
-		private void AddModFolderIfExists(string folder)
+		private void AddModFolderIfExists(string folder, Assembly assembly = null)
 		{
 			if (folder is null)
 			{
@@ -93,6 +97,7 @@ namespace AssetIconLibrary
 
 			var dotAilFolder = Path.Combine(folder, ".ail");
 			var ailFolder = Path.Combine(folder, "ail");
+			var ailConfig = Directory.GetFiles(folder, "*.ail");
 
 			if (Directory.Exists(dotAilFolder) && !FolderUtil.ModThumbnailsFolders.Contains(dotAilFolder))
 			{
@@ -103,12 +108,56 @@ namespace AssetIconLibrary
 			{
 				FolderUtil.ModThumbnailsFolders.Add(ailFolder);
 			}
+
+			foreach (var file in ailConfig)
+			{
+				try
+				{
+					var dictionary = JSON.MakeInto<Dictionary<string, string>>(JSON.Load(File.ReadAllText(file)));
+
+					ImportIconMap(folder, dictionary);
+				}
+				catch { }
+			}
+
+			if (assembly?.GetTypesDerivedFrom<IMod>().FirstOrDefault()?.GetMethod("GetIconsMap", BindingFlags.Static | BindingFlags.Public) is MethodInfo method)
+			{
+				ImportIconMap(folder, method.Invoke(null, new object[0]) as Dictionary<string, string>);
+			}
+		}
+
+		private static void ImportIconMap(string folder, Dictionary<string, string> dictionary)
+		{
+			if (dictionary is null)
+			{
+				return;
+			}
+
+			foreach (var kvp in dictionary)
+			{
+				if (File.Exists(Path.Combine(folder, kvp.Value)))
+				{
+					FolderUtil.ModIconMap[kvp.Key] = (folder, kvp.Value);
+				}
+				else
+				{
+					FolderUtil.ModIconReferenceMap[kvp.Key] = kvp.Value;
+				}
+			}
 		}
 
 		private async Task UnpackIcons()
 		{
 			var directoryInfo = new DirectoryInfo(FolderUtil.ThumbnailsFolder);
 			var versionFilePath = Path.Combine(FolderUtil.ThumbnailsFolder, ".version");
+			var thumbnailFolder = Path.Combine(Path.GetDirectoryName(FolderUtil.ModPath), ".Thumbnails");
+
+			if (!Directory.Exists(thumbnailFolder))
+			{
+				Log.Warn("Thumbnails content not available");
+
+				return;
+			}
 
 			if (File.Exists(versionFilePath) && File.ReadAllText(versionFilePath) == typeof(Mod).Assembly.GetName().Version.ToString())
 			{
@@ -118,7 +167,6 @@ namespace AssetIconLibrary
 			}
 
 			var stopwatch = Stopwatch.StartNew();
-			var thumbnailFolder = Path.Combine(Path.GetDirectoryName(FolderUtil.ModPath), ".Thumbnails");
 
 			if (directoryInfo.Exists)
 			{
@@ -157,6 +205,11 @@ namespace AssetIconLibrary
 
 			var index = 0;
 			foreach (var item in FolderUtil.ModThumbnailsFolders)
+			{
+				UIManager.defaultUISystem.AddHostLocation($"ail", item, false, index++);
+			}
+
+			foreach (var item in FolderUtil.ModIconMap.Select(x => x.Value.Folder).Distinct())
 			{
 				UIManager.defaultUISystem.AddHostLocation($"ail", item, false, index++);
 			}

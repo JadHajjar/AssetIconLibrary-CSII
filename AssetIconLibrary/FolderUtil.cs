@@ -8,10 +8,12 @@ namespace AssetIconLibrary
 {
 	internal class FolderUtil
 	{
-		public static string ThumbnailsFolder { get; }
-		public static string CustomThumbnailsFolder { get; }
-		public static string ModPath { get; set; }
-		public static List<string> ModThumbnailsFolders { get; } = new();
+		internal static string ThumbnailsFolder { get; }
+		internal static string CustomThumbnailsFolder { get; }
+		internal static string ModPath { get; set; }
+		internal static List<string> ModThumbnailsFolders { get; } = new();
+		internal static Dictionary<string, (string Folder, string File)> ModIconMap { get; } = new();
+		internal static Dictionary<string, string> ModIconReferenceMap { get; } = new();
 
 		static FolderUtil()
 		{

@@ -52,7 +52,8 @@ namespace AssetIconLibrary
 			{
 				var prefab = prefabs[i];
 
-				if (!loadedIcons.TryGetValue(prefab.name, out var thumbnail))
+				if (!loadedIcons.TryGetValue(prefab.name, out var thumbnail)
+					&& !loadedIcons.TryGetValue($"{prefab.GetType().Name}.{prefab.name}", out thumbnail))
 				{
 					continue;
 				}
@@ -114,6 +115,19 @@ namespace AssetIconLibrary
 				}
 			}
 
+			foreach (var kvp in FolderUtil.ModIconMap)
+			{
+				addIconName(kvp.Key, kvp.Value.File, kvp.Value.Folder);
+			}
+
+			foreach (var kvp in FolderUtil.ModIconReferenceMap)
+			{
+				if (loadedIcons.TryGetValue(kvp.Value, out var reference))
+				{
+					loadedIcons[kvp.Key] = reference;
+				}
+			}
+
 			if (Directory.Exists(FolderUtil.CustomThumbnailsFolder))
 			{
 				foreach (var item in Directory.EnumerateFiles(FolderUtil.CustomThumbnailsFolder, "*", SearchOption.AllDirectories))
@@ -125,11 +139,10 @@ namespace AssetIconLibrary
 			return loadedIcons;
 
 			void addIcon(string path, string startingFolder)
-			{
-				var name = Path.GetFileNameWithoutExtension(path);
+				=> addIconName(Path.GetFileNameWithoutExtension(path), path, startingFolder);
 
-				loadedIcons[name] = $"coui://ail/{path.Substring(startingFolder.Length + 1).Replace('\\', '/')}";
-			}
+			void addIconName(string name, string path, string startingFolder)
+				=> loadedIcons[name] = $"coui://ail/{path.Substring(startingFolder.Length + 1).Replace('\\', '/')}";
 		}
 	}
 }

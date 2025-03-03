@@ -116,10 +116,10 @@ namespace AssetIconLibrary
 				{ m_Setting.GetOptionLabelLocaleID(nameof(Setting.IconsStyle)), "Icon Style" },
 				{ m_Setting.GetOptionDescLocaleID(nameof(Setting.IconsStyle)), $"Change what style to use for asset icons where applicable." },
 
-				{ m_Setting.GetOptionLabelLocaleID(nameof(Setting.CustomIcons)), "Use custom icons for assets by placing the image files with the assets' name inside the custom thumbnails folder." },
+				{ m_Setting.GetOptionLabelLocaleID(nameof(Setting.CustomIcons)), "Use custom icons for assets by placing the image files with the assets' name inside the custom icons folder." },
 
-				{ m_Setting.GetOptionLabelLocaleID(nameof(Setting.OpenCustomFolders)), "Open Custom Thumbnails Folder" },
-				{ m_Setting.GetOptionDescLocaleID(nameof(Setting.OpenCustomFolders)), $"Add personal custom thumbnails to use over the vanilla or 'Asset Icon Library' icons." },
+				{ m_Setting.GetOptionLabelLocaleID(nameof(Setting.OpenCustomFolders)), "Open Custom Icons Folder" },
+				{ m_Setting.GetOptionDescLocaleID(nameof(Setting.OpenCustomFolders)), $"Add personal custom icons to use over the vanilla or 'Asset Icon Library' icons." },
 
 				{ m_Setting.GetOptionLabelLocaleID("ColoredPropless"), "Colored & No Props" },
 				{ m_Setting.GetOptionLabelLocaleID("White"), "White & No Props" },
