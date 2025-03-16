@@ -10,8 +10,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 
-using Unity.Entities;
-
 namespace AssetIconLibrary
 {
 	[FileLocation(nameof(AssetIconLibrary))]

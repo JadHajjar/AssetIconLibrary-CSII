@@ -48,7 +48,9 @@ namespace AssetIconLibrary
 				$"\tThumbnailsFolder: {ThumbnailsFolder}\r\n" +
 				$"\tCustomThumbnailsFolder: {CustomThumbnailsFolder}\r\n" +
 				$"\tModPath: {ModPath}\r\n" +
-				$"\tModThumbnailsFolders: \r\n\t\t{string.Join("\r\n\t\t", ModThumbnailsFolders)}");
+				$"\tModThumbnailsFolders: \r\n\t\t{string.Join("\r\n\t\t", ModThumbnailsFolders)}\r\n" +
+				$"\tModIconMap: \r\n\t\t{string.Join("\r\n\t\t", ModIconMap)}\r\n" +
+				$"\tModIconReferenceMap: \r\n\t\t{string.Join("\r\n\t\t", ModIconReferenceMap)}");
 		}
 	}
 }

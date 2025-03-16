@@ -1,6 +1,42 @@
 [
   {
     "Stable": true,
+    "Version": "3.0",
+    "Date": "2025-03-18",
+    "ChangeGroups": [
+      {
+        "Name": "New Icons",
+        "Changes": [
+          "Added icons for the 'China' Region Pack.",
+          "Added icons for the 'US South West' Region Pack.",
+          "Added icons for the 'US North East' Region Pack.",
+          "Added icons for the 'Dragon Gate' Creator Pack.",
+          "Added icons for the 'Mediterranean Heritage' Creator Pack.",
+          "Added icons for the 'Leisure Venues' Creator Pack.",
+          "Added icons for the new assets in patch 1.2.4f1."
+        ]
+      },
+      {
+        "Name": "Other Changes",
+        "Changes": [
+          "Compressed all icons used, saving more than 60% of the disk space used.",
+          "Updated the URL used, making all folders use the 'coui://ail/' host instead of different hosts per folder.",
+          "Fixed an issue where mods having both 'ail' and '.ail' folders would use one and not the other. Now uses both if available."
+        ]
+      },
+      {
+        "Name": "Technical Changes",
+        "Changes": [
+          "Changed the file names to use the prefab ID instead of just prefab name. For example: '{PrefabType}.{PrefabName}.png'. Prefab names are still supported but the full prefab ID is encouraged to not mix multiple assets together.",
+          "Added support for '.ail' folders as well as 'ail' folders in custom mods.",
+          "Added support for an API method, placed within a mod, to source asset icon maps to AIL. Check the github for more info.",
+          "Added support for an asset icon map file for mods to use. Check the mod description or github for more info."
+        ]
+      }
+    ]
+  },
+  {
+    "Stable": true,
     "Version": "2.1",
     "Date": "2025-01-27",
     "ChangeGroups": [
