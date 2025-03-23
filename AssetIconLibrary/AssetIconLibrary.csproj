@@ -5,7 +5,7 @@
 		<LangVersion>9</LangVersion>
 		<TargetFramework>net472</TargetFramework>
 		<Configurations>Debug;Release</Configurations>
-		<Version>3.0</Version>
+		<Version>3.1</Version>
 		<FileVersion>$(Version)</FileVersion>
 		<AssemblyVersion>$(Version)</AssemblyVersion>
 		<Company>T. D. W.</Company>
@@ -41,6 +41,9 @@
 
 	<ItemGroup>
 		<Reference Include="Game">
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="Colossal.AssetPipeline">
 			<Private>false</Private>
 		</Reference>
 		<Reference Include="Colossal.Core">
@@ -83,6 +86,9 @@
 			<Private>false</Private>
 		</Reference>
 		<Reference Include="Unity.Mathematics">
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="UnityEngine.ImageConversionModule">
 			<Private>false</Private>
 		</Reference>
 		<Reference Include="Colossal.PSI.Common">

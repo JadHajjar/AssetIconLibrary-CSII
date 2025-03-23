@@ -1,6 +1,23 @@
 [
   {
     "Stable": true,
+    "Version": "3.1",
+    "Date": "2025-03-23",
+    "ChangeGroups": [
+      {
+        "Name": "Changes",
+        "Changes": [
+          "Reworked how thumbnails are linked to assets in the UI. Early tests show that this fixes crashing related to having thousands of thumbnails in the game.",
+          "Reworked when thumbnails are referenced from mods to allow for late updates.",
+          "Removed all network, transport line and transport marker icons.",
+          "Added a handful of missing icons.",
+          "Added icons for vehicle props for Find It."
+        ]
+      }
+    ]
+  },
+  {
+    "Stable": true,
     "Version": "3.0",
     "Date": "2025-03-18",
     "ChangeGroups": [

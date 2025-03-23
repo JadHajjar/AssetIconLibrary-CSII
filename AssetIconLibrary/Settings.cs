@@ -1,4 +1,5 @@
-﻿using Colossal;
+﻿using AssetIconLibrary.Utilities;
+using Colossal;
 using Colossal.IO.AssetDatabase;
 
 using Game.Modding;
@@ -12,7 +13,7 @@ using System.IO;
 
 namespace AssetIconLibrary
 {
-	[FileLocation(nameof(AssetIconLibrary))]
+    [FileLocation(nameof(AssetIconLibrary))]
 	[SettingsUIGroupOrder(SETTINGS_GROUP, CUSTOM_GROUP)]
 	[SettingsUIShowGroupName(SETTINGS_GROUP, CUSTOM_GROUP)]
 	public class Setting : ModSetting

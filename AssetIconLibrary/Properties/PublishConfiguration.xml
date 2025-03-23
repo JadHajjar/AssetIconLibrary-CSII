@@ -91,18 +91,16 @@ For more information about the various APIs in Asset Icon Library, check the git
   <Screenshot Value="Properties/Screenshot10.jpg" />
   <Tag Value="Code Mod" />
   <ForumLink Value="https://forum.paradoxplaza.com/forum/threads/asset-icon-library.1672325/" />
-  <ModVersion Value="2.1" />
+  <ModVersion Value="3.1" />
   <GameVersion Value="*" />
   <ChangeLog>
-# v2.1
-## Region Pack Icons
-* Added icons for the Eastern Europe Region Pack.
-
-## Other Changes
-* Added support for non-code-mods to have custom AIL thumbnail folders.
-* Added support for '.ail' folders as well as 'ail' folders in custom mods.
-* Added versioning for thumbnail unpacking. This essentially helps to make sure your icons are always up to date.
-* Thumbnails from AIL are now hidden from the game to disable their automatic load.
+# v3.1
+## Changes
+* Reworked how thumbnails are linked to assets in the UI. Early tests show that this fixes crashing related to having thousands of thumbnails in the game.
+* Reworked when thumbnails are referenced from mods to allow for late updates.
+* Removed all network, transport line and transport marker icons.
+* Added a handful of missing icons.
+* Added icons for vehicle props for Find It.
 </ChangeLog>
   <ExternalLink Type="discord" Url="https://discord.gg/E4k8ZEtRxd" />
   <ExternalLink Type="github" Url="https://github.com/JadHajjar/AssetIconLibrary-CSII" />

@@ -1,8 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" fill-rule="evenodd" stroke-linejoin="round" stroke-miterlimit="2" clip-rule="evenodd" viewBox="0 0 64 64">
-  <g id="brown">
-    <path fill="#884c1e" fill-rule="nonzero" d="M10.824 8h42.352C54.725 8 56 9.445 56 11.2v27.2C56 48.055 48.99 56 40.471 56H23.529C15.01 56 8 48.055 8 38.4V11.2C8 9.445 9.275 8 10.824 8Z"/>
-  </g>
-  <g id="blue">
-    <path id="Icon_ionic-ios-water" fill="#39c2ff" fill-rule="nonzero" d="M38.886 22.102a37.99 37.99 0 0 0-6.513-8.724.517.517 0 0 0-.746-.01 37.562 37.562 0 0 0-6.493 8.717 31.922 31.922 0 0 0-4.604 15.433v.335a14.428 14.428 0 0 0 .782 4.705c.285.825.647 1.621 1.082 2.378a11.21 11.21 0 0 0 9.6 5.853c6.34 0 11.484-5.789 11.484-12.933a32.121 32.121 0 0 0-4.592-15.754Z"/>
-  </g>
-</svg>
