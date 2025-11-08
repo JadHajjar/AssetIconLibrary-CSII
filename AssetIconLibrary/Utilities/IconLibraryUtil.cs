@@ -92,7 +92,8 @@ namespace AssetIconLibrary.Utilities
 					return;
 				}
 
-				cache[name] = "assetdb://global/" + localAssetDatabase.AddAsset(AssetDataPath.Create(Path.GetDirectoryName(path), Path.GetFileName(path), EscapeStrategy.None)).id.guid;
+				cache[name] = $"coui://ail/{path.Substring(startingFolder.Length + 1).Replace('\\', '/')}";
+				//cache[name] = "assetdb://global/" + localAssetDatabase.AddAsset(AssetDataPath.Create(Path.GetDirectoryName(path), Path.GetFileName(path), EscapeStrategy.None)).id.guid;
 			}
 		}
 

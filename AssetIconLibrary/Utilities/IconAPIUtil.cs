@@ -35,9 +35,9 @@ namespace AssetIconLibrary.Utilities
 			{
 				foreach (var item in mods)
 				{
-					if (Directory.Exists(item.LocalData?.FolderAbsolutePath))
+					if (Directory.Exists(item.path))
 					{
-						_modFolders.Add((item.LocalData.FolderAbsolutePath, null));
+						_modFolders.Add((item.path, null));
 					}
 				}
 			}
@@ -53,7 +53,7 @@ namespace AssetIconLibrary.Utilities
 
 		private static void AddModFolderIfExists(string folder, Assembly assembly = null)
 		{
-			if (folder is null)
+			if (folder is null || !Directory.Exists(folder))
 			{
 				return;
 			}

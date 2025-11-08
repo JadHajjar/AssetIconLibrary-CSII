@@ -91,16 +91,13 @@ For more information about the various APIs in Asset Icon Library, check the git
   <Screenshot Value="Properties/Screenshot10.jpg" />
   <Tag Value="Code Mod" />
   <ForumLink Value="https://forum.paradoxplaza.com/forum/threads/asset-icon-library.1672325/" />
-  <ModVersion Value="3.1" />
+  <ModVersion Value="3.2" />
   <GameVersion Value="*" />
   <ChangeLog>
-# v3.1
-## Changes
-* Reworked how thumbnails are linked to assets in the UI. Early tests show that this fixes crashing related to having thousands of thumbnails in the game.
-* Reworked when thumbnails are referenced from mods to allow for late updates.
-* Removed all network, transport line and transport marker icons.
-* Added a handful of missing icons.
-* Added icons for vehicle props for Find It.
+# v3.2
+## New Icons
+* Added over 3'700 icons for the Netherlands Region Pack, Bridges &amp; Ports, and other assets from previous releases.
+* Compatibility with patch 1.3.6f1.
 </ChangeLog>
   <ExternalLink Type="discord" Url="https://discord.gg/E4k8ZEtRxd" />
   <ExternalLink Type="github" Url="https://github.com/JadHajjar/AssetIconLibrary-CSII" />
