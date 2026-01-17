@@ -58,26 +58,14 @@ namespace AssetIconLibrary
 					continue;
 				}
 
-				if (prefab.TryGet<UIObject>(out var uIObject))
-				{
-#if DEBUG
-					if (HasVanillaIcon(prefab, uIObject))
-					{
-						Mod.Log.Info("VANILLAICON: " + prefab.name);
-					}
-#endif
-					if (!Mod.Settings.OverwriteIcons && HasVanillaIcon(prefab, uIObject))
-					{
-						continue;
-					}
+				UpdatePrefab(prefab, thumbnail);
 
-					uIObject.m_Icon = thumbnail;
-				}
-				else
+				if (prefab is ObjectGeometryPrefab geometryPrefab && geometryPrefab.m_Meshes is not null)
 				{
-					uIObject = prefab.AddComponent<UIObject>();
-					uIObject.m_Priority = 1;
-					uIObject.m_Icon = thumbnail;
+					foreach (var item in geometryPrefab.m_Meshes)
+					{
+						UpdatePrefab(item.m_Mesh, thumbnail);
+					}
 				}
 			}
 
@@ -86,11 +74,36 @@ namespace AssetIconLibrary
 			Mod.Log.Info($"Prefab icon replacement completed in {stopWatch.Elapsed.TotalSeconds}s");
 		}
 
+		private static void UpdatePrefab(PrefabBase prefab, string thumbnail)
+		{
+			if (prefab.TryGet<UIObject>(out var uIObject))
+			{
+#if DEBUG
+				if (HasVanillaIcon(prefab, uIObject))
+				{
+					Mod.Log.Info("VANILLAICON: " + prefab.name);
+				}
+#endif
+				if (!Mod.Settings.OverwriteIcons && HasVanillaIcon(prefab, uIObject))
+				{
+					return;
+				}
+
+				uIObject.m_Icon = thumbnail;
+			}
+			else
+			{
+				uIObject = prefab.AddComponent<UIObject>();
+				uIObject.m_Priority = 1;
+				uIObject.m_Icon = thumbnail;
+			}
+		}
+
 		private static bool HasVanillaIcon(PrefabBase prefab, UIObject uIObject)
 		{
 			return uIObject.m_Group is not null
-				&& prefab.builtin
-				&& uIObject.m_Group.builtin;
+				&& prefab.isBuiltin
+				&& uIObject.m_Group.isBuiltin;
 		}
 	}
 }

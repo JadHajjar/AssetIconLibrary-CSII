@@ -1,4 +1,6 @@
 ﻿using AssetIconLibrary.Utilities;
+
+using Colossal.Core;
 using Colossal.IO.AssetDatabase;
 using Colossal.Logging;
 using Colossal.UI;
@@ -35,7 +37,7 @@ namespace AssetIconLibrary
 			{
 				FolderUtil.ModPath = asset.path;
 
-				GameManager.instance.RegisterUpdater(Initialize);
+				MainThreadDispatcher.RegisterUpdater(Initialize);
 			}
 			else
 			{

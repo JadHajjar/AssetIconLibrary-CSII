@@ -6,56 +6,71 @@ using System.Threading.Tasks;
 
 namespace AssetIconLibrary.Utilities
 {
-    internal class IconUnpackerUtil
-    {
-        internal static async Task UnpackIcons()
-        {
-            Mod.Log.Info("Unpacking icons");
+	internal class IconUnpackerUtil
+	{
+		internal static async Task UnpackIcons()
+		{
+			Mod.Log.Info("Unpacking icons");
 
-            var directoryInfo = new DirectoryInfo(FolderUtil.ThumbnailsFolder);
-            var versionFilePath = Path.Combine(FolderUtil.ThumbnailsFolder, ".version");
-            var thumbnailFolder = Path.Combine(Path.GetDirectoryName(FolderUtil.ModPath), ".Thumbnails");
+			var directoryInfo = new DirectoryInfo(FolderUtil.ThumbnailsFolder);
+			var versionFilePath = Path.Combine(FolderUtil.ThumbnailsFolder, ".version");
+			var tempFolder = Path.Combine(FolderUtil.ThumbnailsFolder, ".temp");
+			var thumbnailFile = Path.Combine(Path.GetDirectoryName(FolderUtil.ModPath), ".Thumbnails", "Pack.zip");
 
-            if (!Directory.Exists(thumbnailFolder))
-            {
-                Mod.Log.Warn("Thumbnails content not available");
+			if (!File.Exists(thumbnailFile))
+			{
+				Mod.Log.Warn("Thumbnails content not available");
 
-                return;
-            }
+				return;
+			}
 
-            if (File.Exists(versionFilePath) && File.ReadAllText(versionFilePath) == typeof(Mod).Assembly.GetName().Version.ToString())
-            {
-                Mod.Log.Info("Thumbnails up to date");
+			if (File.Exists(versionFilePath) && File.ReadAllText(versionFilePath) == typeof(Mod).Assembly.GetName().Version.ToString())
+			{
+				Mod.Log.Info("Thumbnails up to date");
 
-                return;
-            }
+				return;
+			}
 
-            var stopwatch = Stopwatch.StartNew();
+			var stopwatch = Stopwatch.StartNew();
 
-            if (directoryInfo.Exists)
-            {
-                directoryInfo.Delete(true);
-            }
+			if (directoryInfo.Exists)
+			{
+				directoryInfo.Delete(true);
+			}
 
-            directoryInfo.Create();
+			directoryInfo.Create();
 
-            var tasks = Directory.GetFiles(thumbnailFolder, "*.zip").Select(zip => Task.Run(() => UnpackZip(zip, FolderUtil.ThumbnailsFolder)));
+			if (Directory.Exists(tempFolder))
+			{
+				Directory.Delete(tempFolder, true);
+			}
 
-            await Task.WhenAll(tasks);
+			Directory.CreateDirectory(tempFolder);
 
-            File.WriteAllText(versionFilePath, typeof(Mod).Assembly.GetName().Version.ToString());
+			using var stream = File.OpenRead(thumbnailFile);
+			using var zipArchive = new ZipArchive(stream, ZipArchiveMode.Read, false);
 
-            stopwatch.Stop();
+			zipArchive.ExtractToDirectory(tempFolder);
 
-            Mod.Log.Info($"{directoryInfo.GetFiles("*.*", SearchOption.AllDirectories).Length} icons finished unpacking in {stopwatch.Elapsed.TotalSeconds}s");
-        }
+			var tasks = Directory.GetFiles(tempFolder, "*.zip").Select(zip => Task.Run(() => UnpackZip(zip, FolderUtil.ThumbnailsFolder)));
 
-        private static void UnpackZip(string item, string targetFoler)
-        {
-            using var stream = File.OpenRead(item);
-            using var zipArchive = new ZipArchive(stream, ZipArchiveMode.Read, false);
+			await Task.WhenAll(tasks);
 
-            zipArchive.ExtractToDirectory(targetFoler);
-        }
-    }
+			Directory.Delete(tempFolder, true);
+
+			File.WriteAllText(versionFilePath, typeof(Mod).Assembly.GetName().Version.ToString());
+
+			stopwatch.Stop();
+
+			Mod.Log.Info($"{directoryInfo.GetFiles("*.*", SearchOption.AllDirectories).Length} icons finished unpacking in {stopwatch.Elapsed.TotalSeconds}s");
+		}
+
+		private static void UnpackZip(string item, string targetFoler)
+		{
+			using var stream = File.OpenRead(item);
+			using var zipArchive = new ZipArchive(stream, ZipArchiveMode.Read, false);
+
+			zipArchive.ExtractToDirectory(targetFoler);
+		}
+	}
 }

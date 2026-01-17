@@ -1,4 +1,5 @@
-﻿using Colossal.IO.AssetDatabase;
+﻿using Colossal.Core;
+using Colossal.IO.AssetDatabase;
 using Colossal.UI;
 
 using Game.SceneFlow;
@@ -26,7 +27,7 @@ namespace AssetIconLibrary.Utilities
 
 			IconAPIUtil.LoadModIcons();
 
-			GameManager.instance.RunOnMainThread(SetupHostLocations);
+			MainThreadDispatcher.RunOnMainThread(SetupHostLocations);
 
 			cache = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase);
 
