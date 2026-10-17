@@ -15,6 +15,11 @@ namespace AssetIconLibrary
 {
 	internal partial class IconReplacerSystem : GameSystemBase
 	{
+		// Prefabs keep their icons across loads in a session.
+		private readonly HashSet<PrefabBase> handledPrefabs = new();
+		private readonly HashSet<PrefabBase> handledMeshes = new();
+		private bool isEditor;
+
 		protected override void OnCreate()
 		{
 			base.OnCreate();
@@ -28,6 +33,7 @@ namespace AssetIconLibrary
 
 			if (mode is GameMode.Game or GameMode.Editor)
 			{
+				isEditor = mode is GameMode.Editor;
 				Enabled = true;
 			}
 		}
@@ -48,19 +54,37 @@ namespace AssetIconLibrary
 				.GetField("m_Prefabs", BindingFlags.NonPublic | BindingFlags.Instance)
 				.GetValue(prefabSystem) as List<PrefabBase>;
 
+			var shouldSetMeshIcons = isEditor && Mod.Settings.RenderPrefabIcons;
+
 			for (var i = 0; i < prefabs.Count; i++)
 			{
 				var prefab = prefabs[i];
+				var isNewPrefab = handledPrefabs.Add(prefab);
+				var geometryPrefab = prefab as ObjectGeometryPrefab;
+				var hasNewMeshes = shouldSetMeshIcons
+					&& geometryPrefab is not null
+					&& geometryPrefab.m_Meshes is not null
+					&& handledMeshes.Add(prefab);
 
-				if (!loadedIcons.TryGetValue(prefab.name, out var thumbnail)
-					&& !loadedIcons.TryGetValue($"{prefab.GetType().Name}.{prefab.name}", out thumbnail))
+				if (!isNewPrefab && !hasNewMeshes)
 				{
 					continue;
 				}
 
-				UpdatePrefab(prefab, thumbnail);
+				var name = prefab.name;
 
-				if (prefab is ObjectGeometryPrefab geometryPrefab && geometryPrefab.m_Meshes is not null)
+				if (!loadedIcons.TryGetValue(name, out var thumbnail)
+					&& !loadedIcons.TryGetValue($"{prefab.GetType().Name}.{name}", out thumbnail))
+				{
+					continue;
+				}
+
+				if (isNewPrefab)
+				{
+					UpdatePrefab(prefab, thumbnail);
+				}
+
+				if (hasNewMeshes)
 				{
 					foreach (var item in geometryPrefab.m_Meshes)
 					{

@@ -4,7 +4,6 @@ using Colossal.UI;
 
 using Game.SceneFlow;
 
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -13,23 +12,24 @@ namespace AssetIconLibrary.Utilities
 {
 	internal class IconLibraryUtil
 	{
-		private static bool iconsLoaded;
 		private static Dictionary<string, string> cache;
+
+		internal static bool IconsLoaded { get; private set; }
 
 		internal static Dictionary<string, string> GetAvailableIcons()
 		{
-			if (iconsLoaded)
+			if (IconsLoaded)
 			{
 				return cache;
 			}
 
-			iconsLoaded = true;
+			IconsLoaded = true;
 
 			IconAPIUtil.LoadModIcons();
 
 			MainThreadDispatcher.RunOnMainThread(SetupHostLocations);
 
-			cache = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase);
+			cache = new Dictionary<string, string>(new IconNameComparer());
 
 			if (!AssetDatabase.global.TryGetDatabase("User", out var database) || database is not ILocalAssetDatabase localAssetDatabase)
 			{
