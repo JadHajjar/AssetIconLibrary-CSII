@@ -17,43 +17,59 @@ namespace AssetIconLibrary.Utilities
 {
 	internal static class IconAPIUtil
 	{
-		private static readonly List<(string Folder, Assembly Assembly)> _modFolders = new();
+		private static readonly HashSet<string> scannedFolders =
+			new(StringComparer.OrdinalIgnoreCase);
 
 		internal static async Task GetModIcons()
 		{
-			foreach (var item in GameManager.instance.modManager)
-			{
-				if (File.Exists(item?.asset?.path))
-				{
-					_modFolders.Add((Path.GetDirectoryName(item.asset.path), item.asset.assembly));
-				}
-			}
-
 			var mods = await PlatformManager.instance.GetPSI<PdxSdkPlatform>("PdxSdk").GetModsInActivePlayset();
 
 			if (mods != null)
 			{
 				foreach (var item in mods)
 				{
-					if (Directory.Exists(item.path))
-					{
-						_modFolders.Add((item.path, null));
-					}
+					AddModFolderIfExists(item.path);
 				}
 			}
 		}
 
+		// At the load, as local mods are not in the playset and code mods can fill their maps late.
 		internal static void LoadModIcons()
 		{
-			foreach (var mod in _modFolders)
+			foreach (var item in GameManager.instance.modManager)
 			{
-				AddModFolderIfExists(mod.Folder, mod.Assembly);
+				if (!File.Exists(item?.asset?.path))
+				{
+					continue;
+				}
+
+				var folder = Path.GetDirectoryName(item.asset.path);
+
+				try
+				{
+					AddModFolderIfExists(folder);
+
+					// A mod that failed to load has no map to give, and its types may not load.
+					if (item.state is ModManager.ModInfo.State.Loaded)
+					{
+						LoadModAPI(folder, item.asset.assembly);
+					}
+				}
+				catch (Exception ex)
+				{
+					Mod.Log.Warn(ex, $"Failed to load mod icons: {folder}");
+				}
 			}
 		}
 
-		private static void AddModFolderIfExists(string folder, Assembly assembly = null)
+		private static void AddModFolderIfExists(string folder)
 		{
 			if (folder is null || !Directory.Exists(folder))
+			{
+				return;
+			}
+
+			if (!scannedFolders.Add(Path.GetFullPath(folder).TrimEnd(Path.DirectorySeparatorChar)))
 			{
 				return;
 			}
@@ -62,7 +78,18 @@ namespace AssetIconLibrary.Utilities
 
 			var dotAilFolder = Path.Combine(folder, ".ail");
 			var ailFolder = Path.Combine(folder, "ail");
-			var ailConfig = Directory.GetFiles(folder, "*.ail", SearchOption.AllDirectories);
+			string[] ailConfig;
+
+			try
+			{
+				ailConfig = Directory.GetFiles(folder, "*.ail", SearchOption.AllDirectories);
+			}
+			catch (Exception ex)
+			{
+				Mod.Log.Warn(ex, $"Failed to scan mod folder: {folder}");
+
+				return;
+			}
 
 			if (Directory.Exists(dotAilFolder) && !FolderUtil.ModThumbnailsFolders.Contains(dotAilFolder))
 			{
@@ -89,14 +116,24 @@ namespace AssetIconLibrary.Utilities
 					Mod.Log.Warn(ex, $"Failed to load ail config: {file}");
 				}
 			}
+		}
 
+		private static void LoadModAPI(string folder, Assembly assembly)
+		{
 			if (getMethod("GetIconsMap") is MethodInfo getIconsMapMethod)
 			{
 				Mod.Log.Info($"Invoking GetIconsMap from assembly: {assembly.FullName}");
 
 				var map = InvokeMethod(getIconsMapMethod, out var root);
 
-				ImportIconMap(root ?? folder, map);
+				try
+				{
+					ImportIconMap(root ?? folder, map);
+				}
+				catch (Exception ex)
+				{
+					Mod.Log.Warn(ex, $"Failed to load icon map: {assembly.FullName}");
+				}
 			}
 
 			if (getMethod("GetIconsRootFolders") is MethodInfo getIconsRootFoldersMethod)
@@ -126,7 +163,8 @@ namespace AssetIconLibrary.Utilities
 				}
 			}
 
-			MethodInfo getMethod(string name) => assembly?.GetTypesDerivedFrom<IMod>().FirstOrDefault()?.GetMethod(name, BindingFlags.Static | BindingFlags.Public);
+			// GetMethod would throw on a mod that declares two overloads of the same method.
+			MethodInfo getMethod(string name) => assembly?.GetTypesDerivedFrom<IMod>().FirstOrDefault()?.GetMethods(BindingFlags.Static | BindingFlags.Public).FirstOrDefault(x => x.Name == name);
 		}
 
 		private static void ImportIconMap(string folder, Dictionary<string, string> dictionary)
