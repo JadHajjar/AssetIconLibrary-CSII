@@ -204,7 +204,11 @@ namespace AssetIconLibrary.Utilities
 				if (parameters.Length == 2 && parameters[0].ParameterType == typeof(string) && parameters[1].IsOut)
 				{
 					// Case 1: method(string style, out string root)
-					result = methodInfo.Invoke(null, new object[] { Mod.Settings.IconsStyle, root });
+					// Invoke writes an out argument into the array it was given.
+					var args = new object[] { Mod.Settings.IconsStyle, null };
+
+					result = methodInfo.Invoke(null, args);
+					root = args[1] as string;
 				}
 				else if (parameters.Length == 1 && parameters[0].ParameterType == typeof(string))
 				{
@@ -214,7 +218,10 @@ namespace AssetIconLibrary.Utilities
 				else if (parameters.Length == 1 && parameters[0].IsOut)
 				{
 					// Case 3: method(out string root)
-					result = methodInfo.Invoke(null, new object[] { root });
+					var args = new object[] { null };
+
+					result = methodInfo.Invoke(null, args);
+					root = args[0] as string;
 				}
 				else if (parameters.Length == 0)
 				{
