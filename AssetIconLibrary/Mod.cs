@@ -22,6 +22,8 @@ namespace AssetIconLibrary
 
 		public static Setting Settings { get; private set; }
 
+		internal static Task SetupTask { get; private set; } = Task.CompletedTask;
+
 		public void OnLoad(UpdateSystem updateSystem)
 		{
 			Log.Info(nameof(OnLoad));
@@ -49,20 +51,29 @@ namespace AssetIconLibrary
 		{
 			Log.Info("Initialize started");
 
-			Task.Run(UnpackAndSetup);
+			SetupTask = Task.Run(UnpackAndSetup);
 		}
 
-		private async void UnpackAndSetup()
+		private async Task UnpackAndSetup()
 		{
 			try
 			{
 				await IconUnpackerUtil.UnpackIcons();
+			}
+			catch (Exception ex)
+			{
+				Log.Error(ex, "Failed to unpack icons");
+			}
+
+			try
+			{
+				IconLibraryUtil.LoadPackIcons();
 
 				await IconAPIUtil.GetModIcons();
 			}
 			catch (Exception ex)
 			{
-				Log.Error(ex, "Failed to unpack icons");
+				Log.Error(ex, "Failed to list icons");
 			}
 
 			FolderUtil.Output(Log);

@@ -3,7 +3,6 @@ using Colossal;
 using Colossal.IO.AssetDatabase;
 
 using Game.Modding;
-using Game.SceneFlow;
 using Game.Settings;
 using Game.UI.Widgets;
 
@@ -29,7 +28,7 @@ namespace AssetIconLibrary
 
 		[SettingsUISection(MAIN_SECTION, SETTINGS_GROUP)]
 		[SettingsUIMultilineText]
-		[SettingsUIHideByCondition(typeof(Setting), nameof(IsIngame))]
+		[SettingsUIHideByCondition(typeof(Setting), nameof(IsBeforeFirstLoad))]
 		public string RestartRequired => string.Empty;
 
 		[SettingsUISection(MAIN_SECTION, SETTINGS_GROUP)]
@@ -38,6 +37,9 @@ namespace AssetIconLibrary
 
 		[SettingsUISection(MAIN_SECTION, SETTINGS_GROUP)]
 		public bool OverwriteIcons { get; set; } = true;
+
+		[SettingsUISection(MAIN_SECTION, SETTINGS_GROUP)]
+		public bool RenderPrefabIcons { get; set; }
 
 		[SettingsUISection(MAIN_SECTION, CUSTOM_GROUP)]
 		[SettingsUIMultilineText]
@@ -59,9 +61,9 @@ namespace AssetIconLibrary
 
 		}
 
-		public bool IsIngame()
+		public bool IsBeforeFirstLoad()
 		{
-			return GameManager.instance.gameMode == Game.GameMode.MainMenu;
+			return !IconLibraryUtil.IconsLoaded;
 		}
 
 		public DropdownItem<string>[] GetStyleDropdownItems()
@@ -111,6 +113,9 @@ namespace AssetIconLibrary
 
 				{ m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverwriteIcons)), "Overwrite Existing Icons" },
 				{ m_Setting.GetOptionDescLocaleID(nameof(Setting.OverwriteIcons)), $"While enabled, Asset Icon Library will overwrite vanilla assets' icons, even if the assets have an icon already." },
+
+				{ m_Setting.GetOptionLabelLocaleID(nameof(Setting.RenderPrefabIcons)), "Icons for Render Prefabs" },
+				{ m_Setting.GetOptionDescLocaleID(nameof(Setting.RenderPrefabIcons)), $"While enabled, render prefabs in the asset editor use their linked asset's icon when available." },
 
 				{ m_Setting.GetOptionLabelLocaleID(nameof(Setting.IconsStyle)), "Icon Style" },
 				{ m_Setting.GetOptionDescLocaleID(nameof(Setting.IconsStyle)), $"Change what style to use for asset icons where applicable." },

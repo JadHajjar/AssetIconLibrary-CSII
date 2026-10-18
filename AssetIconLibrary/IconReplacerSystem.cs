@@ -1,10 +1,12 @@
 ﻿using AssetIconLibrary.Utilities;
 
+using Colossal.Core;
 using Colossal.Serialization.Entities;
 
 using Game;
 using Game.Prefabs;
 
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
@@ -15,6 +17,11 @@ namespace AssetIconLibrary
 {
 	internal partial class IconReplacerSystem : GameSystemBase
 	{
+		// Prefabs keep their icons across loads in a session.
+		private readonly HashSet<PrefabBase> handledPrefabs = new();
+		private readonly HashSet<PrefabBase> handledMeshes = new();
+		private bool isEditor;
+
 		protected override void OnCreate()
 		{
 			base.OnCreate();
@@ -28,6 +35,7 @@ namespace AssetIconLibrary
 
 			if (mode is GameMode.Game or GameMode.Editor)
 			{
+				isEditor = mode is GameMode.Editor;
 				Enabled = true;
 			}
 		}
@@ -36,7 +44,29 @@ namespace AssetIconLibrary
 		{
 			Enabled = false;
 
-			ReplaceThumbnails();
+			if (Mod.SetupTask.IsCompleted)
+			{
+				ReplaceThumbnails();
+				return;
+			}
+
+			// Waiting on the boot task would freeze this frame for the whole unpack.
+			Mod.Log.Info("Icons are not ready yet, replacing them once they are");
+
+			Mod.SetupTask.ContinueWith(_ => MainThreadDispatcher.RunOnMainThread(replaceLater));
+
+			void replaceLater()
+			{
+				// The dispatcher retries a failing action on every frame.
+				try
+				{
+					ReplaceThumbnails();
+				}
+				catch (Exception ex)
+				{
+					Mod.Log.Error(ex, "Failed to replace prefab icons");
+				}
+			}
 		}
 
 		public void ReplaceThumbnails()
@@ -48,19 +78,37 @@ namespace AssetIconLibrary
 				.GetField("m_Prefabs", BindingFlags.NonPublic | BindingFlags.Instance)
 				.GetValue(prefabSystem) as List<PrefabBase>;
 
+			var shouldSetMeshIcons = isEditor && Mod.Settings.RenderPrefabIcons;
+
 			for (var i = 0; i < prefabs.Count; i++)
 			{
 				var prefab = prefabs[i];
+				var isNewPrefab = handledPrefabs.Add(prefab);
+				var geometryPrefab = prefab as ObjectGeometryPrefab;
+				var hasNewMeshes = shouldSetMeshIcons
+					&& geometryPrefab is not null
+					&& geometryPrefab.m_Meshes is not null
+					&& handledMeshes.Add(prefab);
 
-				if (!loadedIcons.TryGetValue(prefab.name, out var thumbnail)
-					&& !loadedIcons.TryGetValue($"{prefab.GetType().Name}.{prefab.name}", out thumbnail))
+				if (!isNewPrefab && !hasNewMeshes)
 				{
 					continue;
 				}
 
-				UpdatePrefab(prefab, thumbnail);
+				var name = prefab.name;
 
-				if (prefab is ObjectGeometryPrefab geometryPrefab && geometryPrefab.m_Meshes is not null)
+				if (!loadedIcons.TryGetValue(name, out var thumbnail)
+					&& !loadedIcons.TryGetValue($"{prefab.GetType().Name}.{name}", out thumbnail))
+				{
+					continue;
+				}
+
+				if (isNewPrefab)
+				{
+					UpdatePrefab(prefab, thumbnail);
+				}
+
+				if (hasNewMeshes)
 				{
 					foreach (var item in geometryPrefab.m_Meshes)
 					{
