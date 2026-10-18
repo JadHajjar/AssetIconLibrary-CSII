@@ -79,20 +79,29 @@ namespace AssetIconLibrary.Utilities
 				AddIconName(cache, kvp.Key, kvp.Value.File, kvp.Value.Folder);
 			}
 
-			foreach (var kvp in FolderUtil.ModIconReferenceMap)
-			{
-				if (cache.TryGetValue(kvp.Value, out var reference))
-				{
-					cache[kvp.Key] = reference;
-				}
-			}
+			var customIcons = new Dictionary<string, string>(new IconNameComparer());
 
 			if (Directory.Exists(FolderUtil.CustomThumbnailsFolder))
 			{
 				foreach (var item in Directory.EnumerateFiles(FolderUtil.CustomThumbnailsFolder, "*", SearchOption.AllDirectories))
 				{
-					AddIcon(cache, item, FolderUtil.CustomThumbnailsFolder);
+					AddIcon(customIcons, item, FolderUtil.CustomThumbnailsFolder);
 				}
+			}
+
+			foreach (var kvp in FolderUtil.ModIconReferenceMap)
+			{
+				if (customIcons.TryGetValue(kvp.Value, out var reference)
+					|| cache.TryGetValue(kvp.Value, out reference))
+				{
+					cache[kvp.Key] = reference;
+				}
+			}
+
+			// Merged last, so a custom icon wins over a reference with the same name.
+			foreach (var kvp in customIcons)
+			{
+				cache[kvp.Key] = kvp.Value;
 			}
 
 			return cache;
