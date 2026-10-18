@@ -154,7 +154,8 @@ namespace AssetIconLibrary.Utilities
 
 						Mod.Log.Info($"Mapping custom mod folder to thumbnails list: {item}");
 
-						FolderUtil.ModThumbnailsFolders.Add(item);
+						FolderUtil.ModThumbnailsFolders.Add(
+							Path.GetFullPath(item).TrimEnd(Path.DirectorySeparatorChar));
 					}
 				}
 				catch (Exception ex)
@@ -176,12 +177,27 @@ namespace AssetIconLibrary.Utilities
 
 			Mod.Log.Info("Importing icon map");
 
+			// An icon's URL cuts the folder and one separator off its path, so both are full paths.
+			folder = Path.GetFullPath(folder).TrimEnd(Path.DirectorySeparatorChar);
+
 			foreach (var kvp in dictionary)
 			{
 				var path = Path.Combine(folder, kvp.Value);
 
 				if (File.Exists(path))
 				{
+					path = Path.GetFullPath(path);
+
+					// No host serves a file outside the folder, and a shorter path breaks its URL.
+					if (!path.StartsWith(
+						folder + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase))
+					{
+						Mod.Log.WarnFormat(
+							"Skipping icon outside its folder: {0} -> {1}", kvp.Key, kvp.Value);
+
+						continue;
+					}
+
 					Mod.Log.DebugFormat("Mapping icon file: {0} -> {1}", kvp.Key, kvp.Value);
 					FolderUtil.ModIconMap[kvp.Key] = (folder, path);
 				}
