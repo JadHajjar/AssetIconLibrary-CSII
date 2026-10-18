@@ -89,12 +89,25 @@ namespace AssetIconLibrary.Utilities
 				}
 			}
 
-			foreach (var kvp in FolderUtil.ModIconReferenceMap)
+			// A reference can name one listed after it, so passes repeat until one changes nothing.
+			// A cycle may never settle, so passes stop at the reference count: no chain is longer.
+			for (var pass = 0; pass < FolderUtil.ModIconReferenceMap.Count; pass++)
 			{
-				if (customIcons.TryGetValue(kvp.Value, out var reference)
-					|| cache.TryGetValue(kvp.Value, out reference))
+				var changed = false;
+
+				foreach (var kvp in FolderUtil.ModIconReferenceMap)
 				{
-					cache[kvp.Key] = reference;
+					if (customIcons.TryGetValue(kvp.Value, out var reference)
+						|| cache.TryGetValue(kvp.Value, out reference))
+					{
+						changed |= !cache.TryGetValue(kvp.Key, out var icon) || icon != reference;
+						cache[kvp.Key] = reference;
+					}
+				}
+
+				if (!changed)
+				{
+					break;
 				}
 			}
 
