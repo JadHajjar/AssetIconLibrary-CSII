@@ -91,12 +91,17 @@ For more information about the various APIs in Asset Icon Library, check the git
   <Screenshot Value="Properties/Screenshot10.jpg" />
   <Tag Value="Code Mod" />
   <ForumLink Value="https://forum.paradoxplaza.com/forum/threads/asset-icon-library.1672325/" />
-  <ModVersion Value="4.1" />
-  <GameVersion Value="1.5.*" />
+  <ModVersion Value="4.1.1" />
+  <GameVersion Value="1.6.*" />
   <ChangeLog>
-# v4.1
+*Optimizations are brought to you thanks to Morgan · Toverux*
+
 ## Changes
-* Render Prefabs now use their linked asset’s icon when available..
+* Optimized the loading speed of icons.
+* Improved stability when encountering missing folders or broken assets, which could previously stop all icons from being applied.
+* Fixed icons sometimes not being applied when loading into a save before AIL finished unpacking its icons.
+* Fixed an issue while unpacking icons preventing icons from other mods from loading.
+* Fixed icon files referenced by asset icon maps, from '.ail' map files or the 'GetIconsMap' API, failing to load.
 </ChangeLog>
   <ExternalLink Type="discord" Url="https://discord.gg/E4k8ZEtRxd" />
   <ExternalLink Type="github" Url="https://github.com/JadHajjar/AssetIconLibrary-CSII" />

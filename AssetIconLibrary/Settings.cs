@@ -51,8 +51,15 @@ namespace AssetIconLibrary
 		{
 			set
 			{
-				Directory.CreateDirectory(FolderUtil.CustomThumbnailsFolder);
-				Process.Start(FolderUtil.CustomThumbnailsFolder);
+				try
+				{
+					Directory.CreateDirectory(FolderUtil.CustomThumbnailsFolder);
+					Process.Start(FolderUtil.CustomThumbnailsFolder);
+				}
+				catch (System.Exception ex)
+				{
+					Mod.Log.Warn(ex, $"Failed to open custom icons folder: {FolderUtil.CustomThumbnailsFolder}");
+				}
 			}
 		}
 

@@ -75,14 +75,26 @@ namespace AssetIconLibrary
 			var loadedIcons = IconLibraryUtil.GetAvailableIcons();
 			var prefabSystem = World.GetExistingSystemManaged<PrefabSystem>();
 			var prefabs = typeof(PrefabSystem)
-				.GetField("m_Prefabs", BindingFlags.NonPublic | BindingFlags.Instance)
+				.GetField("m_Prefabs", BindingFlags.NonPublic | BindingFlags.Instance)?
 				.GetValue(prefabSystem) as List<PrefabBase>;
+
+			if (prefabs is null)
+			{
+				Mod.Log.Error("Could not access PrefabSystem.m_Prefabs, icon replacement skipped");
+				return;
+			}
 
 			var shouldSetMeshIcons = isEditor && Mod.Settings.RenderPrefabIcons;
 
 			for (var i = 0; i < prefabs.Count; i++)
 			{
 				var prefab = prefabs[i];
+
+				if (prefab is null)
+				{
+					continue;
+				}
+
 				var isNewPrefab = handledPrefabs.Add(prefab);
 				var geometryPrefab = prefab as ObjectGeometryPrefab;
 				var hasNewMeshes = shouldSetMeshIcons
@@ -112,7 +124,10 @@ namespace AssetIconLibrary
 				{
 					foreach (var item in geometryPrefab.m_Meshes)
 					{
-						UpdatePrefab(item.m_Mesh, thumbnail);
+						if (item?.m_Mesh is not null)
+						{
+							UpdatePrefab(item.m_Mesh, thumbnail);
+						}
 					}
 				}
 			}

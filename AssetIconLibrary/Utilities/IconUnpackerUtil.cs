@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -99,12 +100,34 @@ namespace AssetIconLibrary.Utilities
 			Mod.Log.Info($"{directoryInfo.GetFiles("*.*", SearchOption.AllDirectories).Length} icons finished unpacking in {stopwatch.Elapsed.TotalSeconds}s");
 		}
 
-		private static void UnpackZip(string item, string targetFoler)
+		private static void UnpackZip(string item, string targetFolder)
 		{
 			using var stream = File.OpenRead(item);
 			using var zipArchive = new ZipArchive(stream, ZipArchiveMode.Read, false);
 
-			zipArchive.ExtractToDirectory(targetFoler);
+			var rootPath = Path.GetFullPath(targetFolder).TrimEnd(Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar;
+
+			// Extract entry by entry with overwrite, so files shared between chunks don't throw
+			foreach (var entry in zipArchive.Entries)
+			{
+				var destination = Path.GetFullPath(Path.Combine(rootPath, entry.FullName));
+
+				if (!destination.StartsWith(rootPath, StringComparison.OrdinalIgnoreCase))
+				{
+					Mod.Log.Warn($"Skipping zip entry outside of target folder: {entry.FullName}");
+					continue;
+				}
+
+				// Directory entries have an empty name
+				if (string.IsNullOrEmpty(entry.Name))
+				{
+					Directory.CreateDirectory(destination);
+					continue;
+				}
+
+				Directory.CreateDirectory(Path.GetDirectoryName(destination));
+				entry.ExtractToFile(destination, true);
+			}
 		}
 	}
 }

@@ -22,7 +22,16 @@ namespace AssetIconLibrary.Utilities
 
 		internal static async Task GetModIcons()
 		{
-			var mods = await PlatformManager.instance.GetPSI<PdxSdkPlatform>("PdxSdk").GetModsInActivePlayset();
+			var pdxSdk = PlatformManager.instance?.GetPSI<PdxSdkPlatform>("PdxSdk");
+
+			if (pdxSdk is null)
+			{
+				Mod.Log.Warn("PdxSdk platform not available, skipping playset mods");
+
+				return;
+			}
+
+			var mods = await pdxSdk.GetModsInActivePlayset();
 
 			if (mods != null)
 			{
@@ -152,10 +161,16 @@ namespace AssetIconLibrary.Utilities
 							continue;
 						}
 
+						var normalized = Path.GetFullPath(item).TrimEnd(Path.DirectorySeparatorChar);
+
+						if (FolderUtil.ModThumbnailsFolders.Contains(normalized))
+						{
+							continue;
+						}
+
 						Mod.Log.Info($"Mapping custom mod folder to thumbnails list: {item}");
 
-						FolderUtil.ModThumbnailsFolders.Add(
-							Path.GetFullPath(item).TrimEnd(Path.DirectorySeparatorChar));
+						FolderUtil.ModThumbnailsFolders.Add(normalized);
 					}
 				}
 				catch (Exception ex)
@@ -182,9 +197,20 @@ namespace AssetIconLibrary.Utilities
 
 			foreach (var kvp in dictionary)
 			{
-				var path = Path.Combine(folder, kvp.Value);
+				// A null value would break the reference lookups for every icon.
+				if (string.IsNullOrWhiteSpace(kvp.Value))
+				{
+					Mod.Log.WarnFormat("Skipping icon map entry with no value: {0}", kvp.Key);
 
-				if (File.Exists(path))
+					continue;
+				}
+
+				// Path.Combine throws on these, which would drop the rest of the map.
+				var path = kvp.Value.IndexOfAny(Path.GetInvalidPathChars()) < 0
+					? Path.Combine(folder, kvp.Value)
+					: null;
+
+				if (path is not null && File.Exists(path))
 				{
 					path = Path.GetFullPath(path);
 
