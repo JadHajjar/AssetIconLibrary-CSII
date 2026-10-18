@@ -178,10 +178,12 @@ namespace AssetIconLibrary.Utilities
 
 			foreach (var kvp in dictionary)
 			{
-				if (File.Exists(Path.Combine(folder, kvp.Value)))
+				var path = Path.Combine(folder, kvp.Value);
+
+				if (File.Exists(path))
 				{
 					Mod.Log.DebugFormat("Mapping icon file: {0} -> {1}", kvp.Key, kvp.Value);
-					FolderUtil.ModIconMap[kvp.Key] = (folder, kvp.Value);
+					FolderUtil.ModIconMap[kvp.Key] = (folder, path);
 				}
 				else
 				{
